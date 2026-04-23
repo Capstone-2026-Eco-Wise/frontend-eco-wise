@@ -1,22 +1,29 @@
-import { type FormEvent, useState } from "react";
-import { MdEmail } from "react-icons/md";
-import { HiEye, HiEyeOff } from "react-icons/hi";
-import useInput from "../hooks/useInput";
-import type { LoginPayLoad } from "../types/auth";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { type FormEvent } from 'react';
+import { HiEye, HiEyeOff } from 'react-icons/hi';
+import { MdEmail } from 'react-icons/md';
+import { useLoginState } from '../hooks/useLoginState';
+import type { LoginPayLoad } from '../types/auth';
 
 interface LoginFormProps {
   loginAction: (data: LoginPayLoad) => void;
 }
 
 export default function LoginForm({ loginAction }: LoginFormProps) {
-  const [email, onEmailChange] = useInput("");
-  const [password, onPasswordChange] = useInput("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const {
+    email,
+    onEmailChange,
+    password,
+    onPasswordChange,
+    showPassword,
+    setShowPassword,
+    rememberMe,
+    setRememberMe,
+    loading,
+    setLoading,
+  } = useLoginState();
 
   const onSubmitHandler = async (event: FormEvent) => {
     event.preventDefault();
@@ -82,7 +89,7 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
         <div className="relative">
           <Input
             id="login-password"
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
             value={password}
             onChange={onPasswordChange}
@@ -125,7 +132,7 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
         disabled={loading}
         className="h-11 w-full rounded-xl text-sm font-semibold text-white bg-linear-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 shadow-md shadow-emerald-500/30 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99]"
       >
-        {loading ? "Signing in..." : "Sign In"}
+        {loading ? 'Signing in...' : 'Sign In'}
       </button>
     </form>
   );
