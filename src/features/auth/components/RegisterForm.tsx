@@ -1,20 +1,20 @@
-import { type FormEvent, useState } from "react";
-import { MdEmail, MdLock, MdPerson } from "react-icons/md";
-import { HiEye, HiEyeOff } from "react-icons/hi";
-import useInput from "../hooks/useInput";
-import type { RegisterPayLoad } from "../types/auth";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { type FormEvent, useState } from 'react';
+import { HiEye, HiEyeOff } from 'react-icons/hi';
+import { MdEmail, MdPerson } from 'react-icons/md';
+import useInput from '../hooks/useInput';
+import type { RegisterPayLoad } from '../types/auth';
 
 interface RegisterFormProps {
   registerAction: (data: RegisterPayLoad) => Promise<void>;
 }
 
 export default function RegisterForm({ registerAction }: RegisterFormProps) {
-  const [fullName, onFullNameChange] = useInput("");
-  const [username, onUsernameChange] = useInput("");
-  const [email, onEmailChange] = useInput("");
-  const [password, onPasswordChange] = useInput("");
+  const [fullName, onFullNameChange] = useInput('');
+  const [username, onUsernameChange] = useInput('');
+  const [email, onEmailChange] = useInput('');
+  const [password, onPasswordChange] = useInput('');
   const [showPassword, setShowPassword] = useState(false);
   // const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -128,7 +128,7 @@ export default function RegisterForm({ registerAction }: RegisterFormProps) {
         <div className="relative">
           <Input
             id="reg-password"
-            type={showPassword ? "text" : "password"}
+            type={showPassword ? 'text' : 'password'}
             placeholder="••••••••"
             value={password}
             onChange={onPasswordChange}
@@ -187,7 +187,7 @@ export default function RegisterForm({ registerAction }: RegisterFormProps) {
         disabled={loading}
         className="h-11 w-full rounded-xl text-sm font-semibold text-white bg-linear-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 shadow-md shadow-emerald-500/30 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99]"
       >
-        {loading ? "Creating account..." : "Create Account"}
+        {loading ? 'Creating account...' : 'Create Account'}
       </button>
     </form>
   );
