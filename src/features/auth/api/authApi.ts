@@ -25,7 +25,13 @@ export const login = async(data: LoginPayLoad) => {
 
 export const register = async (data: RegisterPayLoad) => {
     try {
-        const res = await axios.post<AuthResponse>('http://localhost:3030/api/users/sign-up', data);
+        const res = await API.post<AuthResponse>('/users/sign-up', data,
+        {
+            headers:{
+                'Content-Type': 'application/json',
+                apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhaXpydWtscGZwbHFrZmJ0cWFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5MjQ4MzgsImV4cCI6MjA5MjUwMDgzOH0.T0R5NWxuhx56TlBwPjZtOoJAL6hDqhe7UgK41TTzGf8',
+            }
+        });
         return {
             error: false,
             data: res.data,
