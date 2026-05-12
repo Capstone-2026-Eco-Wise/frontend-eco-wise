@@ -1,11 +1,5 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  type ReactNode,
-  useEffect,
-} from "react";
-import type { AuthResponse } from "../features/auth/api/authApi";
+import { createContext, useContext, useState, type ReactNode } from "react";
+import type { AuthResponse } from "../features/auth/types/auth";
 
 interface AuthContextType {
   user: AuthResponse["user"] | null;
@@ -19,31 +13,34 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthResponse["user"] | null>(null);
-  const [role, setRole] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Check local storage for initial auth load
-    const storedToken = localStorage.getItem("accessToken");
-    const storedRole = localStorage.getItem("role");
-    const storedUser = localStorage.getItem("user");
-
-    if (storedToken && storedRole && storedUser) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setToken(storedToken);
-      setRole(storedRole);
-      setUser(JSON.parse(storedUser));
+  const [user, setUser] = useState<AuthResponse["user"] | null>(() => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      return storedUser && storedUser !== "undefined"
+        ? JSON.parse(storedUser)
+        : null;
+    } catch {
+      return null;
     }
-  }, []);
+  });
+
+  const [role, setRole] = useState<string | null>(() => {
+    const storedRole = localStorage.getItem("role");
+    return storedRole && storedRole !== "undefined" ? storedRole : null;
+  });
+
+  const [token, setToken] = useState<string | null>(() => {
+    const storedToken = localStorage.getItem("accessToken");
+    return storedToken && storedToken !== "undefined" ? storedToken : null;
+  });
 
   const loginState = (data: AuthResponse) => {
     setUser(data.user);
-    setRole(data.role);
-    setToken(data.token);
+    setRole(data.user.role);
+    setToken(data.access_token);
 
-    localStorage.setItem("accessToken", data.token);
-    localStorage.setItem("role", data.role);
+    localStorage.setItem("accessToken", data.access_token);
+    localStorage.setItem("role", data.user.role);
     localStorage.setItem("user", JSON.stringify(data.user));
   };
 

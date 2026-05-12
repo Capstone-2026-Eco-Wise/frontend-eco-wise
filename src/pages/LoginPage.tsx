@@ -15,10 +15,10 @@ export default function LoginPage() {
 
     if (!error && data) {
       loginState(data);
-      const path = getRedirectPath(data.role);
+      const path = getRedirectPath(data.user.role);
       navigate(path, { replace: true });
     } else {
-      alert("Login failed! Please check your credentials.");
+      alert("Login gagal! Silakan periksa detail Anda.");
     }
   };
 
@@ -37,11 +37,11 @@ export default function LoginPage() {
             EcoWise
           </span>
           <h2 className="text-4xl font-bold leading-tight mb-4">
-            Make the earth <br /> a better place.
+            Jadikan bumi <br /> tempat yang lebih baik.
           </h2>
           <p className="text-white/80 text-sm leading-relaxed max-w-xs">
-            Track your environmental impact, reduce your carbon footprint, and
-            join a community that cares.
+            Masuk untuk mengakses dashboard analitik lingkungan Anda dan terus
+            membangun ekosisem yang lebih cerdas
           </p>
         </div>
       </div>
@@ -56,12 +56,12 @@ export default function LoginPage() {
 
           {/* Sign up link */}
           <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            Don't have an account?{" "}
+            Belum punya akun?{" "}
             <Link
               to="/register"
               className="font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
             >
-              Sign up for free
+              Daftar gratis
             </Link>
           </p>
         </div>

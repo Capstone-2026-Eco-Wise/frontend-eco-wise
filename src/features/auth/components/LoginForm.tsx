@@ -41,10 +41,10 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
       {/* Header */}
       <div className="mb-1">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-          Welcome back
+          Selamat datang kembali
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">
-          Please enter your details to sign in.
+          Silakan masukkan detail Anda untuk masuk.
         </p>
       </div>
 
@@ -54,13 +54,13 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
           htmlFor="login-email"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Email address
+          Alamat Email
         </Label>
         <div className="relative">
           <Input
             id="login-email"
             type="email"
-            placeholder="name@company.com"
+            placeholder="nama@perusahaan.com"
             value={email}
             onChange={onEmailChange}
             required
@@ -77,13 +77,13 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
             htmlFor="login-password"
             className="text-sm font-medium text-gray-700 dark:text-gray-300"
           >
-            Password
+            Kata Sandi
           </Label>
           <button
             type="button"
             className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
           >
-            Forgot password?
+            Lupa kata sandi?
           </button>
         </div>
         <div className="relative">
@@ -122,7 +122,7 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
           htmlFor="remember-me"
           className="text-sm text-gray-600 dark:text-gray-400 cursor-pointer font-normal"
         >
-          Remember me for 30 days
+          Ingat saya selama 30 hari
         </Label>
       </div>
 
@@ -132,7 +132,7 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
         disabled={loading}
         className="h-11 w-full rounded-xl text-sm font-semibold text-white bg-linear-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 shadow-md shadow-emerald-500/30 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99]"
       >
-        {loading ? 'Signing in...' : 'Sign In'}
+        {loading ? 'Sedang masuk...' : 'Masuk'}
       </button>
     </form>
   );

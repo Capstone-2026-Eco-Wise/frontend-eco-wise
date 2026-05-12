@@ -1,10 +1,17 @@
 export type AuthResponse = {
-    token: string;
+    access_token: string;
     user: {
+        fullName: string;
+        fullName: string;
+        avatar_url: string;
+        avatar_url: any;
         id: string;
-        role: 'admin' | 'user';
-        name: string;
-        email: string;
+        role: string;
+        email?: string;
+        user_metadata?: {
+            full_name?: string;
+            username?: string;
+        };
     };
 };
 
@@ -14,8 +21,8 @@ export type LoginPayLoad = {
 };
 
 export type RegisterPayLoad = {
-    full_name: string;
+    fullName: string;
     email: string;
     password: string;
-    username: string
+    username: string;
 };

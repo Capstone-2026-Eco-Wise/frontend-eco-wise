@@ -5,14 +5,15 @@ import type {
   LoginPayLoad,
   RegisterPayLoad,
 } from '../types/auth';
+import { API_ENDPOINTS } from '@/constants/apiEndpoints';
 
 export const login = async (data: LoginPayLoad) => {
   try {
-    const res = await API.post<AuthResponse>('/users/sign-in', data);
+    const res = await API.post<{ message: string; data: AuthResponse }>(API_ENDPOINTS.AUTH.SIGN_IN, data);
 
     return {
       error: false,
-      data: res.data,
+      data: res.data.data,
     };
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -30,11 +31,11 @@ export const login = async (data: LoginPayLoad) => {
 
 export const register = async (data: RegisterPayLoad) => {
   try {
-    const res = await API.post<AuthResponse>('/users/sign-up', data);
+    const res = await API.post<{ message: string; data: AuthResponse }>(API_ENDPOINTS.AUTH.SIGN_UP, data);
 
     return {
       error: false,
-      data: res.data,
+      data: res.data.data,
     };
   } catch (err) {
     if (axios.isAxiosError(err)) {

@@ -1,39 +1,47 @@
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { type FormEvent, useState } from 'react';
-import { HiEye, HiEyeOff } from 'react-icons/hi';
-import { MdEmail, MdPerson } from 'react-icons/md';
-import useInput from '../hooks/useInput';
-import type { RegisterPayLoad } from '../types/auth';
+import { type FormEvent } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { HiEye, HiEyeOff } from "react-icons/hi";
+import { MdEmail, MdPerson } from "react-icons/md";
+import type { RegisterPayLoad } from "../types/auth";
+import { useRegisterState } from "../hooks/useRegister";
 
 interface RegisterFormProps {
   registerAction: (data: RegisterPayLoad) => Promise<void>;
 }
 
 export default function RegisterForm({ registerAction }: RegisterFormProps) {
-  const [fullName, onFullNameChange] = useInput('');
-  const [username, onUsernameChange] = useInput('');
-  const [email, onEmailChange] = useInput('');
-  const [password, onPasswordChange] = useInput('');
-  const [showPassword, setShowPassword] = useState(false);
-  // const [showConfirm, setShowConfirm] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const {
+    fullName,
+    onFullNameChange,
+    username,
+    onUsernameChange,
+    email,
+    onEmailChange,
+    password,
+    onPasswordChange,
+    showPassword,
+    setShowPassword,
+    loading,
+    setLoading,
+    error,
+    setError,
+  } = useRegisterState();
 
   const onSubmitHandler = async (event: FormEvent) => {
     event.preventDefault();
     if (loading) return;
-    // if (password !== confirmPassword) {
-    //   alert("Password dan Confirm Password tidak sama");
-    //   return;
-    // }
+    setError(null);
     setLoading(true);
     try {
       await registerAction({
-        full_name: fullName,
+        fullName,
         email,
         password,
         username,
       });
+    } catch (err: any) {
+      setError(err.message || "Registrasi gagal! Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
@@ -41,13 +49,19 @@ export default function RegisterForm({ registerAction }: RegisterFormProps) {
 
   return (
     <form onSubmit={onSubmitHandler} className="flex flex-col gap-5 w-full">
+      {/* Error Message */}
+      {error && (
+        <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-xs font-medium animate-in fade-in zoom-in duration-300">
+          {error}
+        </div>
+      )}
       {/* Header */}
       <div className="mb-1">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-          Create an account
+          Buat akun baru
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1.5">
-          Sign up to get started with EcoWise.
+          Daftar untuk memulai dengan EcoWise.
         </p>
       </div>
 
@@ -57,13 +71,13 @@ export default function RegisterForm({ registerAction }: RegisterFormProps) {
           htmlFor="reg-name"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Full name
+          Nama Lengkap
         </Label>
         <div className="relative">
           <Input
             id="reg-name"
             type="text"
-            placeholder="Your full name"
+            placeholder="Nama lengkap Anda"
             value={fullName}
             onChange={onFullNameChange}
             required
@@ -79,13 +93,13 @@ export default function RegisterForm({ registerAction }: RegisterFormProps) {
           htmlFor="reg-username"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Username
+          Nama Pengguna
         </Label>
         <div className="relative">
           <Input
             id="reg-username"
             type="text"
-            placeholder="Your username"
+            placeholder="Nama pengguna Anda"
             value={username}
             onChange={onUsernameChange}
             required
@@ -101,13 +115,13 @@ export default function RegisterForm({ registerAction }: RegisterFormProps) {
           htmlFor="reg-email"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Email address
+          Alamat Email
         </Label>
         <div className="relative">
           <Input
             id="reg-email"
             type="email"
-            placeholder="name@company.com"
+            placeholder="nama@perusahaan.com"
             value={email}
             onChange={onEmailChange}
             required
@@ -123,12 +137,12 @@ export default function RegisterForm({ registerAction }: RegisterFormProps) {
           htmlFor="reg-password"
           className="text-sm font-medium text-gray-700 dark:text-gray-300"
         >
-          Password
+          Kata Sandi
         </Label>
         <div className="relative">
           <Input
             id="reg-password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             placeholder="••••••••"
             value={password}
             onChange={onPasswordChange}
@@ -187,7 +201,7 @@ export default function RegisterForm({ registerAction }: RegisterFormProps) {
         disabled={loading}
         className="h-11 w-full rounded-xl text-sm font-semibold text-white bg-linear-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 shadow-md shadow-emerald-500/30 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99]"
       >
-        {loading ? 'Creating account...' : 'Create Account'}
+        {loading ? "Membuat akun..." : "Buat Akun"}
       </button>
     </form>
   );

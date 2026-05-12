@@ -1,0 +1,25 @@
+import API from '@/lib/axios';
+import { API_ENDPOINTS } from '@/constants/apiEndpoints';
+
+export const updateAvatar = async (imageFile: File) => {
+  const formData = new FormData();
+  formData.append('avatar', imageFile);
+
+  const res = await API.patch<{ message: string; data: any }>(
+    API_ENDPOINTS.USERS.UPDATE_AVATAR,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }
+  );
+  return res.data.data;
+};
+
+export const getProfile = async () => {
+  const res = await API.get<{ message: string; data: any }>(
+    API_ENDPOINTS.AUTH.ME
+  );
+  return res.data.data;
+};

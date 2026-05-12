@@ -2,7 +2,7 @@ import axios from 'axios';
 import { env } from './env';
 
 const API = axios.create({
-  baseURL: env.API_URL,
+  baseURL: env.API_URL.endsWith('/') ? env.API_URL : `${env.API_URL}/`,
   headers: {
     'Content-Type': 'application/json',
     apikey: env.API_KEY,

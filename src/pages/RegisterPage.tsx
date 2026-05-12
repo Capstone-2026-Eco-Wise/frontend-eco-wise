@@ -8,13 +8,15 @@ export default function RegisterPage() {
   const navigate = useNavigate();
 
   const handleRegister = async (payload: RegisterPayLoad) => {
-    const { error } = await register(payload);
+    const { error, data } = await register(payload);
 
     if (!error) {
-      alert("Registration successful! Please login.");
+      alert("Registrasi berhasil! Silakan masuk.");
       navigate("/login", { replace: true });
     } else {
-      alert("Registration failed! Please check your details.");
+      // Ambil pesan error dari backend jika ada
+      const errorMessage = data?.message || "Registrasi gagal! Silakan periksa detail Anda.";
+      throw new Error(errorMessage);
     }
   };
 
@@ -33,11 +35,11 @@ export default function RegisterPage() {
             EcoWise
           </span>
           <h2 className="text-4xl font-bold leading-tight mb-4">
-            Start your <br /> green journey.
+            Mulai perjalanan <br /> ramah lingkungan Anda.
           </h2>
           <p className="text-white/80 text-sm leading-relaxed max-w-xs">
-            Join thousands of people who are actively reducing their carbon
-            footprint and making a difference every day.
+            Masuk untuk mengakses dashboard analitik lingkungan Anda dan terus
+            membangun ekosisem yang lebih cerdas.
           </p>
         </div>
       </div>
@@ -52,12 +54,12 @@ export default function RegisterPage() {
 
           {/* Login link */}
           <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            Already have an account?{" "}
+            Sudah punya akun?{" "}
             <Link
               to="/login"
               className="font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
             >
-              Sign in here
+              Masuk di sini
             </Link>
           </p>
         </div>
