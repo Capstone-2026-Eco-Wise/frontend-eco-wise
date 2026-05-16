@@ -1,46 +1,54 @@
-import { Search, Filter, MoreVertical, Edit2, Trash2, CheckCircle2, XCircle } from 'lucide-react';
+import {
+  Search,
+  Filter,
+  MoreVertical,
+  Edit2,
+  Trash2,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 
 export default function AdminPenggunaView() {
   const mockUsers = [
     {
-      id: 'USR-001',
-      name: 'Budi Santoso',
-      email: 'budi@example.com',
-      role: 'User',
-      status: 'Active',
-      joinDate: '12 Mei 2026',
+      id: "USR-001",
+      name: "Budi Santoso",
+      email: "budi@example.com",
+      role: "User",
+      status: "Active",
+      joinDate: "12 Mei 2026",
     },
     {
-      id: 'USR-002',
-      name: 'Siti Aminah',
-      email: 'siti@example.com',
-      role: 'User',
-      status: 'Active',
-      joinDate: '14 Mei 2026',
+      id: "USR-002",
+      name: "Siti Aminah",
+      email: "siti@example.com",
+      role: "User",
+      status: "Active",
+      joinDate: "14 Mei 2026",
     },
     {
-      id: 'USR-003',
-      name: 'Admin Utama',
-      email: 'admin@ecowise.com',
-      role: 'Admin',
-      status: 'Active',
-      joinDate: '1 Jan 2026',
+      id: "USR-003",
+      name: "Admin Utama",
+      email: "admin@ecowise.com",
+      role: "Admin",
+      status: "Active",
+      joinDate: "1 Jan 2026",
     },
     {
-      id: 'USR-004',
-      name: 'Joko Anwar',
-      email: 'joko@example.com',
-      role: 'User',
-      status: 'Suspended',
-      joinDate: '10 Apr 2026',
+      id: "USR-004",
+      name: "Joko Anwar",
+      email: "joko@example.com",
+      role: "User",
+      status: "Suspended",
+      joinDate: "10 Apr 2026",
     },
     {
-      id: 'USR-005',
-      name: 'Rina Melati',
-      email: 'rina@example.com',
-      role: 'User',
-      status: 'Active',
-      joinDate: '15 Mei 2026',
+      id: "USR-005",
+      name: "Rina Melati",
+      email: "rina@example.com",
+      role: "User",
+      status: "Active",
+      joinDate: "15 Mei 2026",
     },
   ];
 
@@ -112,9 +120,9 @@ export default function AdminPenggunaView() {
                   <td className="px-6 py-5">
                     <span
                       className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold ${
-                        user.role === 'Admin'
-                          ? 'bg-purple-50 text-purple-600 border border-purple-100'
-                          : 'bg-slate-100 text-slate-600 border border-slate-200'
+                        user.role === "Admin"
+                          ? "bg-purple-50 text-purple-600 border border-purple-100"
+                          : "bg-slate-100 text-slate-600 border border-slate-200"
                       }`}
                     >
                       {user.role}
@@ -122,7 +130,7 @@ export default function AdminPenggunaView() {
                   </td>
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-1.5">
-                      {user.status === 'Active' ? (
+                      {user.status === "Active" ? (
                         <>
                           <CheckCircle2 className="size-4 text-emerald-500" />
                           <span className="text-sm font-bold text-emerald-600">
@@ -144,13 +152,22 @@ export default function AdminPenggunaView() {
                   </td>
                   <td className="px-6 py-5">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 transition-colors" title="Edit">
+                      <button
+                        className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 transition-colors"
+                        title="Edit"
+                      >
                         <Edit2 className="size-4" />
                       </button>
-                      <button className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors" title="Hapus">
+                      <button
+                        className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                        title="Hapus"
+                      >
                         <Trash2 className="size-4" />
                       </button>
-                      <button className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 transition-colors" title="Opsi Lain">
+                      <button
+                        className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 transition-colors"
+                        title="Opsi Lain"
+                      >
                         <MoreVertical className="size-4" />
                       </button>
                     </div>
@@ -165,10 +182,16 @@ export default function AdminPenggunaView() {
         <div className="p-6 border-t border-slate-100 flex items-center justify-between text-sm font-medium text-slate-500 bg-slate-50/30">
           <p>Menampilkan 1 hingga 5 dari 5 pengguna</p>
           <div className="flex gap-2">
-            <button className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50" disabled>
+            <button
+              className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50"
+              disabled
+            >
               Sebelumnya
             </button>
-            <button className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50" disabled>
+            <button
+              className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50"
+              disabled
+            >
               Selanjutnya
             </button>
           </div>

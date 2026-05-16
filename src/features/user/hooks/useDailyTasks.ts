@@ -11,7 +11,14 @@ export const useDailyTasks = () => {
       try {
         setLoading(true);
         const data = await getDailyTasks();
-        setTasks(data);
+        // Filter agar User hanya melihat task hari ini
+        const today = new Date().toISOString().split("T")[0];
+        const activeTasksForToday = data.filter((task) => {
+          if (!task.isActive) return false;
+          const taskDate = new Date(task.activeDate).toISOString().split("T")[0];
+          return taskDate === today;
+        });
+        setTasks(activeTasksForToday);
       } catch (err: any) {
         setError(err.response?.data?.message || err.message || "Gagal memuat daftar tugas");
       } finally {

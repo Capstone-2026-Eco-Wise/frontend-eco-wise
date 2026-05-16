@@ -1,75 +1,114 @@
-import { Users, Activity, CheckCircle, TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react';
+import {
+  Users,
+  Activity,
+  CheckCircle,
+  TrendingUp,
+  ShieldCheck,
+  Tag,
+  ToggleRight,
+  ToggleLeft,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import useAdminStats from "../hooks/useAdminStats";
+import useAdminFAQs from "../hooks/useAdminFAQs";
+import useAdminDailyTasks from "../hooks/useAdminDailyTasks";
 
 export default function AdminBerandaView() {
+  const { stats, loading, error } = useAdminStats();
+  const { faqs, loading: faqsLoading } = useAdminFAQs();
+  const { tasks, loading: tasksLoading } = useAdminDailyTasks();
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        {/* Lingkaran Animasi */}
+        <div className="relative flex items-center justify-center">
+          <div className="absolute size-16 rounded-full border-4 border-emerald-100 animate-ping opacity-75"></div>
+          <div className="relative size-16 rounded-full border-4 border-slate-100 border-t-emerald-500 animate-spin"></div>
+          {/* Ikon di tengah lingkaran */}
+          <ShieldCheck className="absolute size-6 text-emerald-500 animate-pulse" />
+        </div>
+
+        {/* Teks Animasi */}
+        <div className="text-center space-y-1">
+          <h3 className="text-lg font-bold text-slate-700 animate-pulse">
+            Memuat Data...
+          </h3>
+          <p className="text-sm font-medium text-slate-400">
+            Menyiapkan dashboard Anda
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        {/* Ikon Error */}
+        <div className="size-16 rounded-full bg-rose-50 border-2 border-rose-100 flex items-center justify-center">
+          <Activity className="size-8 text-rose-500" />
+        </div>
+
+        {/* Teks Error */}
+        <div className="text-center space-y-1">
+          <h3 className="text-lg font-bold text-slate-700">
+            Gagal Memuat Data
+          </h3>
+          <p className="text-sm font-medium text-slate-400">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 inline-flex items-center px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors shadow-sm text-sm font-medium"
+          >
+            Coba Lagi
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const statCards = [
     {
-      title: 'Total Pengguna',
-      value: '2,845',
-      trend: '+12.5%',
+      title: "Total FAQ",
+      value: stats.totalFaqs,
+      trend: "Live data",
       trendUp: true,
       icon: <Users className="size-6 text-blue-500" />,
-      bg: 'bg-blue-50',
-      border: 'border-blue-100',
+      bg: "bg-blue-50",
+      border: "border-blue-100",
     },
     {
-      title: 'Sampah Terpindai',
-      value: '14,290',
-      trend: '+8.2%',
+      title: "Daily Task Aktif",
+      value: stats.totalActiveTasks,
+      trend: "Live data",
       trendUp: true,
       icon: <CheckCircle className="size-6 text-emerald-500" />,
-      bg: 'bg-emerald-50',
-      border: 'border-emerald-100',
+      bg: "bg-emerald-50",
+      border: "border-emerald-100",
     },
     {
-      title: 'Aktivitas Harian',
-      value: '845',
-      trend: '-2.4%',
-      trendUp: false,
+      title: "Total Pemindaian",
+      value: stats.totalScans,
+      trend: "Live data",
+      trendUp: true,
       icon: <Activity className="size-6 text-amber-500" />,
-      bg: 'bg-amber-50',
-      border: 'border-amber-100',
+      bg: "bg-amber-50",
+      border: "border-amber-100",
     },
     {
-      title: 'Keamanan Sistem',
-      value: 'Optimal',
-      trend: 'Aman',
+      title: "Total Poin Dibagikan",
+      value: stats.ecoPoints,
+      trend: "Live data",
       trendUp: true,
       icon: <ShieldCheck className="size-6 text-teal-500" />,
-      bg: 'bg-teal-50',
-      border: 'border-teal-100',
+      bg: "bg-teal-50",
+      border: "border-teal-100",
     },
   ];
 
-  const recentActivities = [
-    {
-      id: 1,
-      user: 'Budi Santoso',
-      action: 'Memindai Botol Plastik',
-      time: '2 menit yang lalu',
-      status: 'success',
-    },
-    {
-      id: 2,
-      user: 'Siti Aminah',
-      action: 'Mendaftar akun baru',
-      time: '15 menit yang lalu',
-      status: 'info',
-    },
-    {
-      id: 3,
-      user: 'Sistem',
-      action: 'Peringatan load server tinggi',
-      time: '1 jam yang lalu',
-      status: 'warning',
-    },
-    {
-      id: 4,
-      user: 'Ahmad Faisal',
-      action: 'Menukarkan 500 Poin Eco',
-      time: '3 jam yang lalu',
-      status: 'success',
-    },
-  ];
+
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -98,8 +137,8 @@ export default function AdminBerandaView() {
               <div
                 className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${
                   stat.trendUp
-                    ? 'bg-emerald-50 text-emerald-600'
-                    : 'bg-rose-50 text-rose-600'
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "bg-rose-50 text-rose-600"
                 }`}
               >
                 {stat.trendUp ? (
@@ -122,60 +161,134 @@ export default function AdminBerandaView() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Chart / Content Area */}
-        <div className="lg:col-span-2 bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 flex flex-col justify-center min-h-[400px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Review Manajemen FAQ */}
+        <div className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 flex flex-col h-full">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-[#1e293b]">
-              Grafik Pemindaian (Minggu Ini)
+              Review Manajemen FAQ
             </h2>
-            <button className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors">
+            <Link
+              to="/admin/faq"
+              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
+            >
               Lihat Detail &rarr;
-            </button>
+            </Link>
           </div>
-          <div className="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-slate-100 rounded-2xl bg-slate-50 text-slate-400 font-medium">
-            <Activity className="size-12 mb-3 text-slate-300" />
-            <p>Area ini dapat diisi dengan Chart.js atau Recharts</p>
+          <div className="flex-1 flex flex-col gap-4">
+            {faqsLoading ? (
+              <p className="text-slate-400 font-medium text-sm text-center py-10">
+                Memuat FAQ...
+              </p>
+            ) : faqs.length === 0 ? (
+              <p className="text-slate-400 font-medium text-sm text-center py-10">
+                Belum ada FAQ yang dibuat.
+              </p>
+            ) : (
+              faqs.slice(0, 3).map((faq) => (
+                <div
+                  key={faq.id}
+                  className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col gap-2"
+                >
+                  <div className="flex justify-between items-start gap-4">
+                    <p className="text-sm font-bold text-slate-800 line-clamp-1">
+                      {faq.question}
+                    </p>
+                    <span className="shrink-0 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100">
+                      <Tag className="size-3" />
+                      {faq.category}
+                    </span>
+                  </div>
+                  <p className="text-xs font-medium text-slate-500 line-clamp-2">
+                    {faq.answer}
+                  </p>
+                  <div
+                    className={`mt-1 inline-flex items-center gap-1 text-xs font-bold ${faq.isActive ? "text-emerald-600" : "text-slate-400"}`}
+                  >
+                    {faq.isActive ? (
+                      <>
+                        <ToggleRight className="size-4" /> Aktif
+                      </>
+                    ) : (
+                      <>
+                        <ToggleLeft className="size-4" /> Nonaktif
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
-        {/* Recent Activities */}
-        <div className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100">
+        {/* Review Daily Task */}
+        <div className="bg-white rounded-[32px] p-8 shadow-sm border border-slate-100 flex flex-col h-full">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-[#1e293b]">Aktivitas Sistem</h2>
+            <h2 className="text-xl font-bold text-[#1e293b]">
+              Review Daily Task
+            </h2>
+            <Link
+              to="/admin/daily-tasks"
+              className="text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
+            >
+              Kelola Task &rarr;
+            </Link>
           </div>
-          <div className="space-y-6">
-            {recentActivities.map((act) => (
-              <div key={act.id} className="flex gap-4 group">
-                <div className="relative mt-1">
+          <div className="flex-1 flex flex-col gap-4">
+            {tasksLoading ? (
+              <p className="text-slate-400 font-medium text-sm text-center py-10">
+                Memuat Task...
+              </p>
+            ) : tasks.length === 0 ? (
+              <p className="text-slate-400 font-medium text-sm text-center py-10">
+                Belum ada task yang dibuat.
+              </p>
+            ) : (
+              tasks.slice(0, 3).map((task) => (
+                <div
+                  key={task.id}
+                  className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col gap-2"
+                >
+                  <div className="flex justify-between items-start gap-4">
+                    <p className="text-sm font-bold text-slate-800">
+                      {task.taskName}
+                    </p>
+                    <span className="shrink-0 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100">
+                      ⭐ {task.pointReward} poin
+                    </span>
+                  </div>
                   <div
-                    className={`size-3 rounded-full z-10 relative ${
-                      act.status === 'success'
-                        ? 'bg-emerald-500 shadow-emerald-500/50'
-                        : act.status === 'warning'
-                        ? 'bg-amber-500 shadow-amber-500/50'
-                        : 'bg-blue-500 shadow-blue-500/50'
-                    } shadow-md`}
-                  />
-                  {act.id !== recentActivities.length && (
-                    <div className="absolute top-3 left-1.5 w-0.5 h-12 bg-slate-100 -translate-x-1/2" />
-                  )}
+                    className={`mt-1 inline-flex items-center gap-1 text-xs font-bold ${task.isActive ? "text-emerald-600" : "text-slate-400"}`}
+                  >
+                    {task.isActive ? (
+                      <>
+                        <CheckCircle2 className="size-4" /> Aktif
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="size-4" /> Nonaktif
+                      </>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-[#1e293b] mb-0.5 group-hover:text-emerald-600 transition-colors">
-                    {act.action}
-                  </p>
-                  <p className="text-xs font-medium text-slate-500">
-                    Oleh <span className="text-slate-700">{act.user}</span> •{' '}
-                    {act.time}
-                  </p>
-                </div>
+              ))
+            )}
+
+            <div className="mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-start gap-3">
+              <div className="p-2 bg-emerald-100 rounded-lg text-emerald-600">
+                <ShieldCheck className="size-5" />
               </div>
-            ))}
+              <div>
+                <p className="text-sm font-bold text-emerald-800">
+                  Tampilan Pengguna
+                </p>
+                <p className="text-xs font-medium text-emerald-600/80 mt-0.5">
+                  Pengguna akan melihat tugas aktif di atas pada dashboard
+                  mereka setiap harinya untuk mendapatkan poin.
+                </p>
+              </div>
+            </div>
           </div>
-          <button className="w-full mt-8 py-3 rounded-xl bg-slate-50 text-slate-600 text-sm font-bold hover:bg-slate-100 transition-colors">
-            Lihat Semua Log
-          </button>
         </div>
       </div>
     </div>

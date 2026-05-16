@@ -5,9 +5,20 @@ import { useFAQs } from "@/features/landing/hooks/useFAQs";
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [activeCategory, setActiveCategory] = useState<string>("Semua");
   const { faqs, loading, error } = useFAQs();
 
+  // Ambil semua kategori yang unik dari data FAQ
+  const categories = [
+    "Semua",
+    ...Array.from(new Set(faqs.map((faq) => faq.category))),
+  ];
 
+  // Filter data berdasarkan kategori aktif
+  const filteredFaqs =
+    activeCategory === "Semua"
+      ? faqs
+      : faqs.filter((faq) => faq.category === activeCategory);
 
   return (
     <div id="faq" className="bg-white dark:bg-slate-950 w-full pt-16 pb-32">
@@ -25,10 +36,40 @@ export default function FAQSection() {
           {loading && (
             <p className="text-center text-slate-400 py-8">Memuat FAQ...</p>
           )}
-          {error && (
-            <p className="text-center text-red-500 py-8">{error}</p>
+          {error && <p className="text-center text-red-500 py-8">{error}</p>}
+
+          {/* Kategori Tabs */}
+          {!loading && !error && categories.length > 1 && (
+            <div className="flex flex-wrap justify-center gap-2 mb-10">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => {
+                    setActiveCategory(cat);
+                    setOpenIndex(null);
+                  }}
+                  className={cn(
+                    "px-5 py-2.5 rounded-full text-sm font-bold transition-all",
+                    activeCategory === cat
+                      ? "bg-[#059669] text-white shadow-md shadow-[#059669]/20"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700",
+                  )}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           )}
-          {faqs.map((faq, index) => {
+
+          {filteredFaqs.length === 0 && !loading && !error && (
+            <div className="text-center py-10 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+              <p className="text-slate-500 font-medium">
+                Belum ada FAQ untuk kategori ini.
+              </p>
+            </div>
+          )}
+
+          {filteredFaqs.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div

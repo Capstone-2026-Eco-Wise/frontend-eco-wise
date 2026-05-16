@@ -8,11 +8,15 @@ export interface DailyTask {
   pointReward: number;
   isActive: boolean;
   activeDate: string;
+  categoryId?: string | null;
+  category?: {
+    id: string;
+    categoryName: string;
+    categoryCode: string;
+  } | null;
 }
 
 export const getDailyTasks = async () => {
-  const res = await API.get<{ message: string; data: DailyTask[] }>(
-    API_ENDPOINTS.DAILY_TASKS.GET_ALL
-  );
-  return res.data.data;
+  const res = await API.get(API_ENDPOINTS.DAILY_TASKS.GET_ALL);
+  return res.data.data?.data || res.data.data || [];
 };

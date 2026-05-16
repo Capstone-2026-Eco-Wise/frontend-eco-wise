@@ -1,17 +1,20 @@
-import { Route, Routes } from 'react-router-dom';
-import AdminBerandaView from './features/admin/components/AdminBerandaView';
-import AdminPenggunaView from './features/admin/components/AdminPenggunaView';
-import BerandaView from './features/user/components/BerandaView';
-import PengaturanView from './features/user/components/PengaturanView';
-import RiwayatView from './features/user/components/RiwayatView';
-import ScannerView from './features/user/components/ScannerView';
-import AdminDashboard from './pages/AdminDashboard';
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import UserDashboard from './pages/UserDashboard';
-import ProtectedRoute from './routes/ProtectedRoute';
-import PublicRoute from './routes/PublicRoute';
+import { Route, Routes } from "react-router-dom";
+import AdminBerandaView from "./features/admin/components/AdminBerandaView";
+import AdminDailyTaskView from "./features/admin/components/AdminDailyTaskView";
+import AdminFAQView from "./features/admin/components/AdminFAQView";
+import AdminPenggunaView from "./features/admin/components/AdminPenggunaView";
+import AdminKategoriView from "./features/admin/components/AdminKategoriView";
+import BerandaView from "./features/user/components/BerandaView";
+import PengaturanView from "./features/user/components/PengaturanView";
+import RiwayatView from "./features/user/components/RiwayatView";
+import ScannerView from "./features/user/components/ScannerView";
+import AdminDashboard from "./pages/AdminDashboard";
+import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import UserDashboard from "./pages/UserDashboard";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 function App() {
   return (
@@ -26,16 +29,19 @@ function App() {
       </Route>
 
       {/* Protected Admin Routes (Accessible only if Admin) */}
-      <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin" element={<AdminDashboard />}>
           <Route index element={<AdminBerandaView />} />
-          <Route path="pengguna" element={<AdminPenggunaView />} />
+          <Route path="user" element={<AdminPenggunaView />} />
+          <Route path="faq" element={<AdminFAQView />} />
+          <Route path="daily-tasks" element={<AdminDailyTaskView />} />
+          <Route path="kategori" element={<AdminKategoriView />} />
         </Route>
       </Route>
 
       {/* Protected User Routes (Accessible only if User/Authenticated) */}
 
-      <Route element={<ProtectedRoute allowedRoles={['user']} />}>
+      <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
         <Route path="/dashboard" element={<UserDashboard />}>
           <Route index element={<BerandaView />} />
           <Route path="scan" element={<ScannerView />} />

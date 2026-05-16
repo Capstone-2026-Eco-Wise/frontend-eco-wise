@@ -1,0 +1,386 @@
+import { useState } from "react";
+import { Plus, Search, Trash2, Edit2, ShieldCheck, Activity, X, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
+import API from "@/lib/axios";
+import { API_ENDPOINTS } from "@/constants/apiEndpoints";
+import useAdminWasteCategories from "@/features/admin/hooks/useAdminWasteCategories";
+import type { WasteCategory } from "@/services/wasteCategoriesService";
+
+// --- Modal Tambah/Edit Kategori ---
+function CategoryModal({
+  category,
+  onSuccess,
+  onClose,
+}: {
+  category?: WasteCategory;
+  onSuccess: (msg: string) => void;
+  onClose: () => void;
+}) {
+  const isEdit = !!category;
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    categoryName: category?.categoryName || "",
+    categoryCode: category?.categoryCode || "",
+    description: category?.description || "",
+    handlingTips: category?.handlingTips || "",
+    colorHex: category?.colorHex || "#4ade80",
+    pointsReward: category?.pointsReward || 10,
+  });
+
+  const handleSubmit = async () => {
+    if (!formData.categoryName.trim() || !formData.categoryCode.trim()) {
+      toast.error("Nama Kategori dan Kode Kategori wajib diisi");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      if (isEdit && category) {
+        const url = API_ENDPOINTS.WASTE_CATEGORIES.UPDATE.replace(":id", category.id);
+        await API.patch(url, formData);
+      } else {
+        await API.post(API_ENDPOINTS.WASTE_CATEGORIES.CREATE, formData);
+      }
+      onSuccess(isEdit ? "Kategori berhasil diperbarui!" : "Kategori berhasil ditambahkan!");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || err.message || "Gagal menyimpan kategori");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+      <div className="bg-white rounded-[28px] shadow-2xl w-full max-w-lg animate-in fade-in zoom-in-95 duration-200 overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="flex items-center justify-between p-6 pb-4 border-b border-slate-100">
+          <h2 className="text-xl font-extrabold text-[#1e293b]">
+            {isEdit ? "Edit Kategori Sampah" : "Tambah Kategori Sampah"}
+          </h2>
+          <button
+            onClick={onClose}
+            className="size-9 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+          >
+            <X className="size-5" />
+          </button>
+        </div>
+
+        <div className="p-6 overflow-y-auto space-y-5">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Nama Kategori</label>
+              <input
+                type="text"
+                value={formData.categoryName}
+                onChange={(e) => setFormData({ ...formData, categoryName: e.target.value })}
+                placeholder="cth: Organik"
+                className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Kode Kategori</label>
+              <input
+                type="text"
+                value={formData.categoryCode}
+                onChange={(e) => setFormData({ ...formData, categoryCode: e.target.value.toUpperCase() })}
+                placeholder="cth: ORG"
+                maxLength={5}
+                disabled={isEdit} // Mencegah perubahan kode setelah dibuat karena relasi/unique
+                className={`w-full h-11 px-4 rounded-xl border border-slate-200 transition-all text-sm font-medium ${isEdit ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500'}`}
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-2">Deskripsi Lengkap</label>
+            <textarea
+              rows={2}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Jelaskan detail kategori ini..."
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium resize-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-2">Tips Penanganan</label>
+            <textarea
+              rows={2}
+              value={formData.handlingTips}
+              onChange={(e) => setFormData({ ...formData, handlingTips: e.target.value })}
+              placeholder="Cara membuang jenis sampah ini..."
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium resize-none"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Poin Reward</label>
+              <input
+                type="number"
+                value={formData.pointsReward}
+                onChange={(e) => setFormData({ ...formData, pointsReward: Number(e.target.value) })}
+                min={1}
+                className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-slate-700 mb-2">Warna (Hex)</label>
+              <div className="flex gap-2 items-center">
+                <input
+                  type="color"
+                  value={formData.colorHex}
+                  onChange={(e) => setFormData({ ...formData, colorHex: e.target.value })}
+                  className="size-11 rounded-xl cursor-pointer border-0 bg-transparent p-1"
+                />
+                <input
+                  type="text"
+                  value={formData.colorHex}
+                  onChange={(e) => setFormData({ ...formData, colorHex: e.target.value })}
+                  className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="p-6 border-t border-slate-100 flex gap-3 bg-slate-50 mt-auto">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors"
+          >
+            Batal
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm shadow-emerald-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Tambah Kategori"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- Komponen Utama ---
+export default function AdminKategoriView() {
+  const {
+    filteredCategories,
+    loading,
+    error,
+    search,
+    setSearch,
+    showModal,
+    editTarget,
+    deleteTarget,
+    setDeleteTarget,
+    fetchCategories,
+    confirmDelete,
+    handleEdit,
+    handleAdd,
+    closeModal,
+    closeDeleteModal,
+  } = useAdminWasteCategories();
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="relative flex items-center justify-center">
+          <div className="absolute size-16 rounded-full border-4 border-emerald-100 animate-ping opacity-75"></div>
+          <div className="relative size-16 rounded-full border-4 border-slate-100 border-t-emerald-500 animate-spin"></div>
+          <ShieldCheck className="absolute size-6 text-emerald-500 animate-pulse" />
+        </div>
+        <div className="text-center space-y-1">
+          <h3 className="text-lg font-bold text-slate-700 animate-pulse">Memuat Data...</h3>
+          <p className="text-sm font-medium text-slate-400">Menyiapkan manajemen kategori</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="size-16 rounded-full bg-rose-50 border-2 border-rose-100 flex items-center justify-center">
+          <Activity className="size-8 text-rose-500" />
+        </div>
+        <div className="text-center space-y-1">
+          <h3 className="text-lg font-bold text-slate-700">Gagal Memuat Data</h3>
+          <p className="text-sm font-medium text-slate-400">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 inline-flex items-center px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600 transition-colors shadow-sm text-sm font-medium"
+          >
+            Coba Lagi
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {showModal && (
+        <CategoryModal
+          category={editTarget}
+          onSuccess={(msg) => {
+            fetchCategories();
+            closeModal();
+            setTimeout(() => toast.success(msg), 100);
+          }}
+          onClose={closeModal}
+        />
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-sm shadow-xl animate-in zoom-in-95 duration-200">
+            <div className="size-12 rounded-full bg-rose-100 flex items-center justify-center mb-4 mx-auto">
+              <AlertTriangle className="size-6 text-rose-600" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-800 text-center mb-2">Hapus Kategori?</h3>
+            <p className="text-sm text-slate-500 text-center mb-6">
+              Apakah Anda yakin ingin menghapus kategori ini? Data terkait mungkin akan terpengaruh.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={closeDeleteModal}
+                className="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="flex-1 py-2.5 px-4 rounded-xl text-sm font-bold text-white bg-rose-500 hover:bg-rose-600 shadow-sm shadow-rose-500/20 transition-all"
+              >
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1e293b] tracking-tight mb-2">
+              Manajemen Kategori
+            </h1>
+            <p className="text-sm font-medium text-slate-500 max-w-xl leading-relaxed">
+              Kelola kategori jenis sampah dan tentukan Poin Reward dasar untuk setiap hasil scan pengguna.
+            </p>
+          </div>
+          <button
+            onClick={handleAdd}
+            className="group flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 shadow-sm shadow-emerald-500/20 transition-all active:scale-95 whitespace-nowrap"
+          >
+            <Plus className="size-5 transition-transform group-hover:rotate-90" />
+            Tambah Kategori
+          </button>
+        </div>
+
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-200/60 overflow-hidden flex flex-col h-[calc(100vh-220px)] min-h-[500px]">
+          <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-emerald-100 rounded-xl">
+                <ShieldCheck className="size-5 text-emerald-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800">Daftar Kategori</h3>
+                <p className="text-xs font-medium text-slate-500">
+                  Total {filteredCategories.length} kategori aktif
+                </p>
+              </div>
+            </div>
+            <div className="relative w-full sm:w-72 group">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+              <input
+                type="text"
+                placeholder="Cari kategori..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full h-11 pl-10 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all"
+              />
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs font-bold uppercase tracking-wider sticky top-0 z-10">
+                  <th className="px-6 py-4">Kode</th>
+                  <th className="px-6 py-4">Kategori</th>
+                  <th className="px-6 py-4">Poin Dasar</th>
+                  <th className="px-6 py-4">Tips</th>
+                  <th className="px-6 py-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredCategories.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-16 text-center text-slate-400 font-medium">
+                      Tidak ada kategori ditemukan.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredCategories.map((cat) => (
+                    <tr key={cat.id} className="hover:bg-slate-50/80 transition-colors group">
+                      <td className="px-6 py-5">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                          {cat.categoryCode}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-3">
+                          <div 
+                            className="size-4 rounded-full shadow-sm"
+                            style={{ backgroundColor: cat.colorHex || '#cbd5e1' }}
+                          />
+                          <div>
+                            <p className="text-sm font-bold text-[#1e293b] mb-0.5">{cat.categoryName}</p>
+                            <p className="text-xs font-medium text-slate-400 truncate max-w-[200px]">
+                              {cat.description || '-'}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-100">
+                          ⭐ {cat.pointsReward} poin
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <p className="text-xs font-medium text-slate-500 line-clamp-2 max-w-xs">
+                          {cat.handlingTips || '-'}
+                        </p>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => handleEdit(cat)}
+                            className="p-2 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors"
+                            title="Edit"
+                          >
+                            <Edit2 className="size-4" />
+                          </button>
+                          <button
+                            onClick={() => setDeleteTarget(cat.id)}
+                            className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                            title="Hapus"
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
