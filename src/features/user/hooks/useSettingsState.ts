@@ -1,8 +1,8 @@
-import { useSession } from '@/features/auth/hooks/useSession';
-import useInput from '@/hooks/useInput';
-import { updateAvatar } from '@/services/userService';
-import { useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { useSession } from "@/features/auth/hooks/useSession";
+import useInput from "@/hooks/useInput";
+import { updateAvatar } from "@/services/userService";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 export const useSettingsState = () => {
   const { userData, refetchUser } = useSession();
@@ -24,7 +24,6 @@ export const useSettingsState = () => {
 
   const handleSave = () => {
     setIsSaving(true);
-    // Simulasi request ke backend untuk teks (berhubung endpoint belum ada)
     setTimeout(() => {
       setIsSaving(false);
       setIsAlertOpen(true);

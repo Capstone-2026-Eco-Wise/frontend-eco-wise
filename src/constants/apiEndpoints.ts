@@ -27,6 +27,10 @@ export const API_ENDPOINTS = {
     GET_BY_ID: 'waste-categories/:id'  
   },
   FAQS: {
-    GET_ALL: 'faqs',
+    GET_PUBLIC: 'faqs/public',
+    GET_CREATOR: 'faqs/creator',
+    CREATE: 'faqs',
+    UPDATE: 'faqs/:id',
+    DELETE: 'faqs/:id',
   },
 } as const;
