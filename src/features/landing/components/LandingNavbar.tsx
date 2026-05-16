@@ -1,20 +1,28 @@
-import { Link } from "react-router-dom";
-import { Leaf, ArrowRight } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import getRedirectPath from "@/features/auth/utils/roleRedirect";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { buttonVariants } from '@/components/ui/button';
+import { useSession } from '@/features/auth/hooks/useSession';
+import { cn } from '@/lib/utils';
+import { Leaf } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function LandingNavbar() {
-  const { isAuthenticated, role } = useAuth();
-  const redirectPath = getRedirectPath(role || "user");
+  const { userData } = useSession();
+  let redirectPath;
 
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+  if (userData?.data?.role === 'user') {
+    redirectPath = '/dashboard';
+  } else if (userData?.data?.role === 'admin') {
+    redirectPath = '/admin';
+  } 
+
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+  ) => {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
       const y = element.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top: y, behavior: "smooth" });
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
@@ -31,19 +39,43 @@ export default function LandingNavbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-8">
-          <a href="#beranda" onClick={(e) => scrollToSection(e, 'beranda')} className="text-emerald-500 font-semibold text-sm border-b-2 border-emerald-500 pb-1">Beranda</a>
-          <a href="#fitur" onClick={(e) => scrollToSection(e, 'fitur')} className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent">Fitur</a>
-          <a href="#tentang-kami" onClick={(e) => scrollToSection(e, 'tentang-kami')} className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent">Tentang Kami</a>
-          <a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent">FAQ</a>
+          <a
+            href="#beranda"
+            onClick={(e) => scrollToSection(e, 'beranda')}
+            className="text-emerald-500 font-semibold text-sm border-b-2 border-emerald-500 pb-1"
+          >
+            Beranda
+          </a>
+          <a
+            href="#fitur"
+            onClick={(e) => scrollToSection(e, 'fitur')}
+            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
+          >
+            Fitur
+          </a>
+          <a
+            href="#tentang-kami"
+            onClick={(e) => scrollToSection(e, 'tentang-kami')}
+            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
+          >
+            Tentang Kami
+          </a>
+          <a
+            href="#faq"
+            onClick={(e) => scrollToSection(e, 'faq')}
+            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
+          >
+            FAQ
+          </a>
         </div>
 
         <div className="flex items-center gap-4">
-          {isAuthenticated ? (
+          {userData ? (
             <Link
               to={redirectPath}
               className={cn(
-                buttonVariants({ variant: "default" }),
-                "rounded-full shadow-md bg-slate-900 hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+                buttonVariants({ variant: 'default' }),
+                'rounded-full shadow-md bg-slate-900 hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-400',
               )}
             >
               Go to Dashboard
@@ -53,8 +85,8 @@ export default function LandingNavbar() {
               <Link
                 to="/login"
                 className={cn(
-                  buttonVariants({ variant: "outline" }),
-                  "rounded-full border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 px-6 font-medium"
+                  buttonVariants({ variant: 'outline' }),
+                  'rounded-full border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 px-6 font-medium',
                 )}
               >
                 Masuk
@@ -62,8 +94,8 @@ export default function LandingNavbar() {
               <Link
                 to="/register"
                 className={cn(
-                  buttonVariants({ variant: "default" }),
-                  "rounded-full bg-[#20c997] hover:bg-[#1ba87e] text-white px-6 font-medium shadow-none border-none"
+                  buttonVariants({ variant: 'default' }),
+                  'rounded-full bg-[#20c997] hover:bg-[#1ba87e] text-white px-6 font-medium shadow-none border-none',
                 )}
               >
                 Daftar

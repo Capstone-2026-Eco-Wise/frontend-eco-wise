@@ -13,7 +13,7 @@ export const useDailyTasks = () => {
         const data = await getDailyTasks();
         setTasks(data);
       } catch (err: any) {
-        setError(err.message || "Gagal memuat daftar tugas");
+        setError(err.response?.data?.message || err.message || "Gagal memuat daftar tugas");
       } finally {
         setLoading(false);
       }

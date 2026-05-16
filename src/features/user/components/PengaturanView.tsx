@@ -6,7 +6,7 @@ import {
   Lock,
   Loader2,
   CheckCircle2,
-} from "lucide-react";
+} from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,15 +15,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { useSettingsState } from "../hooks/useSettingsState";
+} from '@/components/ui/alert-dialog';
+import { useSettingsState } from '../hooks/useSettingsState';
 
 export default function PengaturanView() {
   const {
     user,
-    fullName,
     onFullNameChange,
-    username,
     onUsernameChange,
     currentPassword,
     onCurrentPasswordChange,
@@ -88,13 +86,11 @@ export default function PengaturanView() {
           </div>
           <div>
             <h2 className="text-2xl font-extrabold text-[#1e293b] mb-1">
-              {user?.user_metadata?.full_name ||
-                user?.fullName ||
-                "Eco Warrior"}
+              {user?.fullName}
             </h2>
             <p className="text-slate-500 font-medium text-sm flex items-center gap-1.5">
               <Mail className="size-4" />
-              {user?.email || "user@example.com"}
+              {user?.email}
             </p>
           </div>
         </div>
@@ -108,7 +104,7 @@ export default function PengaturanView() {
               </label>
               <input
                 type="text"
-                value={fullName}
+                defaultValue={user?.fullName}
                 onChange={onFullNameChange}
                 className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] transition-all text-sm font-medium"
               />
@@ -119,7 +115,7 @@ export default function PengaturanView() {
               </label>
               <input
                 type="text"
-                value={username}
+                defaultValue={user?.username}
                 onChange={onUsernameChange}
                 className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] transition-all text-sm font-medium"
               />
@@ -132,7 +128,7 @@ export default function PengaturanView() {
             </label>
             <input
               type="email"
-              defaultValue={user?.email || "user@example.com"}
+              defaultValue={user?.email || ''}
               disabled
               className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 text-sm font-medium cursor-not-allowed"
             />
@@ -217,7 +213,7 @@ export default function PengaturanView() {
             className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-linear-to-r from-[#10b981] to-[#34d399] text-white font-bold text-sm shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             {isSaving && <Loader2 className="size-4 animate-spin" />}
-            {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
+            {isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
           </button>
         </div>
       </div>

@@ -1,27 +1,33 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useSession } from '@/features/auth/hooks/useSession';
+import { Navigate, Outlet } from 'react-router-dom';
 
-interface ProtectedRouteProps {
-  allowedRoles?: string[];
-  redirectPath?: string;
-}
+type ROLES = 'user' | 'admin';
 
-export default function ProtectedRoute({
-  allowedRoles,
-  redirectPath = "/",
-}: ProtectedRouteProps) {
-  const { isAuthenticated, role } = useAuth();
+type ProtectedRouteProps = {
+  allowedRoles?: ROLES[];
+};
+
+export default function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
+  const { userData, isAuthenticated, isLoading } = useSession();
+  let path;
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">Loading...</div>;
+  }
 
   if (!isAuthenticated) {
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && role && !allowedRoles.includes(role)) {
-    // If they are logged in but don't have the right role, 
-    // kick them to their appropriate dashboard or home.
-    return <Navigate to="/" replace />;
+  if (userData?.data?.role === 'admin') {
+    path = '/admin';
+  } else {
+    path = '/dashboard';
   }
 
-  // If authenticated and authorized, render the child routes
+  if (allowedRoles && !allowedRoles.includes(userData?.data.role as ROLES)) {
+    return <Navigate to={path} replace />;
+  }
+
   return <Outlet />;
 }

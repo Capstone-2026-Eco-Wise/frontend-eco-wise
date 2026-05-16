@@ -4,14 +4,12 @@ import { Label } from '@/components/ui/label';
 import { type FormEvent } from 'react';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { MdEmail } from 'react-icons/md';
+import { useLogin } from '../hooks/useLogin';
 import { useLoginState } from '../hooks/useLoginState';
-import type { LoginPayLoad } from '../types/auth';
 
-interface LoginFormProps {
-  loginAction: (data: LoginPayLoad) => void;
-}
+// Pa$$w0rd!
 
-export default function LoginForm({ loginAction }: LoginFormProps) {
+export default function LoginForm() {
   const {
     email,
     onEmailChange,
@@ -24,13 +22,20 @@ export default function LoginForm({ loginAction }: LoginFormProps) {
     loading,
     setLoading,
   } = useLoginState();
+  const { handleLogin } = useLogin({
+    email,
+    password,
+  });
 
   const onSubmitHandler = async (event: FormEvent) => {
     event.preventDefault();
+
     if (loading) return;
+
     setLoading(true);
+
     try {
-      await Promise.resolve(loginAction({ email, password }));
+      await handleLogin();
     } finally {
       setLoading(false);
     }

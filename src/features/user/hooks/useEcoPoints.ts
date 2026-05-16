@@ -13,7 +13,7 @@ export const useEcoPoints = () => {
         const data = await getEcoPoints();
         setPointsData(data);
       } catch (err: any) {
-        setError(err.message || "Gagal memuat data poin");
+        setError(err.response?.data?.message || err.message || "Gagal memuat data poin");
       } finally {
         setLoading(false);
       }

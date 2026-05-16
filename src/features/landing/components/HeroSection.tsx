@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useSession } from "@/features/auth/hooks/useSession";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function HeroSection() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useSession();
 
   return (
     <div id="beranda" className="max-w-7xl mx-auto px-6 pt-24 pb-32 text-center relative z-10">

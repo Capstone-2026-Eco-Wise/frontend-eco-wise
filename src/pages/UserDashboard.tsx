@@ -1,20 +1,16 @@
-import DashboardLayout from "@/features/user/components/DashboardLayout";
-import { useSearchParams } from "react-router-dom";
-import ScannerView from "@/features/user/components/ScannerView";
-import BerandaView from "@/features/user/components/BerandaView";
-import RiwayatView from "@/features/user/components/RiwayatView";
-import PengaturanView from "@/features/user/components/PengaturanView";
+import DashboardLayout from '@/features/user/components/DashboardLayout';
+import { Outlet } from 'react-router-dom';
 
 export default function UserDashboard() {
-  const [searchParams] = useSearchParams();
-  const tab = searchParams.get("tab") || "beranda";
+  const navLinks = [
+    { id: '/dashboard', name: 'Beranda', path: '/dashboard' },
+    { id: '/dashboard/scan', name: 'Pemindai', path: '/dashboard/scan' },
+    { id: '/dashboard/riwayat', name: 'Riwayat', path: '/dashboard/riwayat' },
+  ];
 
   return (
-    <DashboardLayout>
-      {tab === "beranda" && <BerandaView />}
-      {tab === "scanner" && <ScannerView />}
-      {tab === "riwayat" && <RiwayatView />}
-      {tab === "pengaturan" && <PengaturanView />}
+    <DashboardLayout navLinks={navLinks}>
+      <Outlet />
     </DashboardLayout>
   );
 }

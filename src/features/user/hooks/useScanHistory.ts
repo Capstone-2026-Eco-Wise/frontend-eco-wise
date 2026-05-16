@@ -13,7 +13,7 @@ export const useScanHistory = () => {
         const data = await getScanHistory();
         setHistory(data);
       } catch (err: any) {
-        setError(err.message || "Gagal memuat riwayat scan");
+        setError(err.response?.data?.message || err.message || "Gagal memuat riwayat scan");
       } finally {
         setLoading(false);
       }

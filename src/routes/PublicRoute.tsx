@@ -1,13 +1,17 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useSession } from "@/features/auth/hooks/useSession";
 import getRedirectPath from "../features/auth/utils/roleRedirect";
 
 export default function PublicRoute() {
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated, userData, isLoading } = useSession();
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center bg-white dark:bg-slate-950">Loading...</div>;
+  }
 
   // If the user is already authenticated, redirect them away from public auth pages
-  if (isAuthenticated) {
-    const redirectPath = getRedirectPath(role || "user");
+  if (isAuthenticated && userData?.data?.role) {
+    const redirectPath = getRedirectPath(userData.data.role);
     return <Navigate to={redirectPath} replace />;
   }
 

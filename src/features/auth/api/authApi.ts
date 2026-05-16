@@ -4,34 +4,61 @@ import type {
   AuthResponse,
   LoginPayLoad,
   RegisterPayLoad,
+  LoginResponseType,
+  ReturnAuthType,
 } from '../types/auth';
 import { API_ENDPOINTS } from '@/constants/apiEndpoints';
+import { sessionUser } from './session';
 
-export const login = async (data: LoginPayLoad) => {
+export const login = async (
+  loginPayload: LoginPayLoad,
+): Promise<ReturnAuthType> => {
   try {
-    const res = await API.post<{ message: string; data: AuthResponse }>(API_ENDPOINTS.AUTH.SIGN_IN, data);
+    const { data } = await API.post<LoginResponseType>(
+      API_ENDPOINTS.AUTH.SIGN_IN,
+      loginPayload,
+    );
+
+    localStorage.setItem('accessToken', data.data.access_token);
+
+    const sessionUserData = await sessionUser(data.data.access_token);
+
+    if (!data || !data.data) {
+      return {
+        error: true,
+        data: sessionUserData,
+        message: data.message,
+      };
+    }
 
     return {
       error: false,
-      data: res.data.data,
+      data: sessionUserData,
+      message: data.message,
     };
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
       return {
         error: true,
-        data: err.response?.data,
+        data: error.response?.data,
+        message: error.response?.data.message,
       };
     }
   }
+
   return {
     error: true,
     data: null,
+    message: 'Terjadi kesalahan',
   };
 };
 
 export const register = async (data: RegisterPayLoad) => {
   try {
-    const res = await API.post<{ message: string; data: AuthResponse }>(API_ENDPOINTS.AUTH.SIGN_UP, data);
+    const res = await API.post<{ message: string; data: AuthResponse }>(
+      API_ENDPOINTS.AUTH.SIGN_UP,
+      data,
+    );
 
     return {
       error: false,

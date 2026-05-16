@@ -8,8 +8,8 @@ import {
   Recycle,
   Loader2,
   Image as ImageIcon,
-} from "lucide-react";
-import { useScanner } from "../hooks/useScanner";
+} from 'lucide-react';
+import { useScanner } from '../hooks/useScanner';
 
 export default function ScannerView() {
   const {
@@ -21,7 +21,7 @@ export default function ScannerView() {
     handleFileChange,
     handleUpload,
     resetScanner,
-    openCamera
+    openCamera,
   } = useScanner();
 
   return (
@@ -106,13 +106,15 @@ export default function ScannerView() {
             )}
           </div>
           {error && (
-            <p className="mt-4 text-sm font-medium text-red-500 text-center">{error}</p>
+            <p className="mt-4 text-sm font-medium text-red-500 text-center">
+              {error}
+            </p>
           )}
         </div>
 
         {/* Right Panel: Scan Result */}
         <div
-          className={`w-full lg:w-[420px] shrink-0 bg-white rounded-[32px] shadow-xl shadow-slate-200/50 p-8 border border-slate-100 flex flex-col relative overflow-hidden transition-all duration-700 ${!scanResult ? "opacity-50 grayscale-[0.5]" : "opacity-100"}`}
+          className={`w-full lg:w-[420px] shrink-0 bg-white rounded-[32px] shadow-xl shadow-slate-200/50 p-8 border border-slate-100 flex flex-col relative overflow-hidden transition-all duration-700 ${!scanResult ? 'opacity-50 grayscale-[0.5]' : 'opacity-100'}`}
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#10b981]/5 rounded-full blur-2xl pointer-events-none" />
 
@@ -141,13 +143,13 @@ export default function ScannerView() {
               <div className="mb-6 relative z-10">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ccfbf1] text-[#0f766e] text-[10px] font-extrabold tracking-widest mb-4 uppercase">
                   <Recycle className="size-3.5" />
-                  ID: {scanResult.categoryId.split("-")[0]}
+                  ID: {scanResult.categoryId.split('_')[0]}
                 </div>
                 <h2 className="text-[40px] font-extrabold text-[#1e293b] leading-tight mb-2">
                   Teridentifikasi
                 </h2>
                 <p className="text-slate-500 text-sm font-medium">
-                  Tingkat kepercayaan:{" "}
+                  Tingkat kepercayaan:{' '}
                   {(Number(scanResult.confidenceScore) * 100).toFixed(1)}%
                 </p>
               </div>

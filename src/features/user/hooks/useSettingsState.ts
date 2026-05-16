@@ -1,26 +1,23 @@
-import { useState, useRef } from "react";
-import useInput from "@/hooks/useInput";
-import { useAuth } from "@/contexts/AuthContext";
-import { updateAvatar } from "@/services/userService";
+import { useSession } from '@/features/auth/hooks/useSession';
+import useInput from '@/hooks/useInput';
+import { updateAvatar } from '@/services/userService';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 export const useSettingsState = () => {
-  const { user } = useAuth();
+  const { userData, refetchUser } = useSession();
 
-  const [fullName, onFullNameChange] = useInput(
-    user?.user_metadata?.full_name || "Eco Warrior",
-  );
-  const [username, onUsernameChange] = useInput(
-    user?.user_metadata?.username || "ecowarrior",
-  );
+  const [fullName, onFullNameChange] = useInput(userData?.data?.fullName);
+  const [username, onUsernameChange] = useInput(userData?.data?.username);
 
-  const [currentPassword, onCurrentPasswordChange] = useInput("");
-  const [newPassword, onNewPasswordChange] = useInput("");
-  const [confirmPassword, onConfirmPasswordChange] = useInput("");
+  const [currentPassword, onCurrentPasswordChange] = useInput('');
+  const [newPassword, onNewPasswordChange] = useInput('');
+  const [confirmPassword, onConfirmPasswordChange] = useInput('');
 
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  
+
   // State untuk Avatar
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -44,11 +41,11 @@ export const useSettingsState = () => {
     try {
       setIsUploadingAvatar(true);
       await updateAvatar(file);
-      // Sukses! Kamu bisa tambahkan refresh atau update context di sini
-      window.location.reload(); 
-    } catch (error) {
-      console.error("Gagal update avatar:", error);
-      alert("Gagal mengupdate foto profil");
+      await refetchUser();
+      toast.success('Foto profil berhasil diperbarui');
+    } catch (error: any) {
+      console.error('Gagal update avatar:', error);
+      toast.error(error.response?.data?.message || 'Gagal mengupdate foto profil');
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -59,7 +56,7 @@ export const useSettingsState = () => {
   };
 
   return {
-    user,
+    user: userData?.data || null,
     fullName,
     onFullNameChange,
     username,
