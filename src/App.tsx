@@ -5,7 +5,7 @@ import AdminFAQView from "./features/admin/components/AdminFAQView";
 import AdminPenggunaView from "./features/admin/components/AdminPenggunaView";
 import AdminKategoriView from "./features/admin/components/AdminKategoriView";
 import BerandaView from "./features/user/components/BerandaView";
-import PengaturanView from "./features/user/components/PengaturanView";
+import PengaturanView from "./components/common/PengaturanView";
 import RiwayatView from "./features/user/components/RiwayatView";
 import ScannerView from "./features/user/components/ScannerView";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -36,6 +36,7 @@ function App() {
           <Route path="faq" element={<AdminFAQView />} />
           <Route path="daily-tasks" element={<AdminDailyTaskView />} />
           <Route path="kategori" element={<AdminKategoriView />} />
+          <Route path="pengaturan" element={<PengaturanView />} />
         </Route>
       </Route>
 

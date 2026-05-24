@@ -45,7 +45,11 @@ function TaskModal({
   });
 
   const handleSubmit = async () => {
-    if (!formData.taskName.trim() || !formData.description.trim() || !formData.categoryId) {
+    if (
+      !formData.taskName.trim() ||
+      !formData.description.trim() ||
+      !formData.categoryId
+    ) {
       toast.error("Kategori, Nama Task, dan Deskripsi tidak boleh kosong");
       return;
     }
@@ -412,7 +416,9 @@ export default function AdminDailyTaskView() {
                             {task.category.categoryName}
                           </span>
                         ) : (
-                          <span className="text-xs font-medium text-slate-400">-</span>
+                          <span className="text-xs font-medium text-slate-400">
+                            -
+                          </span>
                         )}
                       </td>
                       <td className="px-6 py-5">

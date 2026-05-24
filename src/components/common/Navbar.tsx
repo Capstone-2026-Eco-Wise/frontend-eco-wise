@@ -60,7 +60,7 @@ export const Navbar = ({ navLinks }: NavbarProps) => {
               </p>
 
               <p className="text-sm font-extrabold text-[#1e293b] leading-none">
-                {userData?.data?.username}
+                {userData?.data?.fullName}
               </p>
             </div>
 

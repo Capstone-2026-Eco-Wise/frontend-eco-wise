@@ -1,4 +1,4 @@
-import DashboardLayout from '@/features/user/components/DashboardLayout';
+import DashboardLayout from '@/components/common/DashboardLayout';
 import { Outlet } from 'react-router-dom';
 
 export default function UserDashboard() {

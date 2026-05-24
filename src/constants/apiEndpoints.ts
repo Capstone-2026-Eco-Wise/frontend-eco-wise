@@ -4,9 +4,11 @@ export const API_ENDPOINTS = {
     SIGN_UP: 'auth/sign-up',
     ME: 'users/me',
     SIGN_OUT: 'auth/sign-out',
+    UPDATE_PASSWORD: 'auth/update-password',
   },
   USERS: {
     UPDATE_AVATAR: 'users/me/avatar',
+    UPDATE_PROFILE: 'users/me/profile',
   },
   SCAN_HISTORY: {
     GET_ALL: 'scan-history',
@@ -45,5 +47,7 @@ export const API_ENDPOINTS = {
     GET_DAILY_TASKS: 'daily-tasks',
     GET_SCAN_HISTORY: 'scan-history',
     GET_ECO_POINTS: 'eco-points/streak',
+    GET_USERS: 'users',
+    DELETE_USER: 'users/:id', // blm ada
   }
 } as const;

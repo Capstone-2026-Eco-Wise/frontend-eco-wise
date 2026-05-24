@@ -17,10 +17,10 @@ export default function useAdminStats() {
             try {
                 setLoading(true);
                 const [faqs, tasks, scans, points] = await Promise.all([
-                    API.get(API_ENDPOINTS.ADMIN.GET_FAQS),
-                    API.get(API_ENDPOINTS.ADMIN.GET_DAILY_TASKS),
-                    API.get(API_ENDPOINTS.ADMIN.GET_SCAN_HISTORY),
-                    API.get(API_ENDPOINTS.ADMIN.GET_ECO_POINTS),
+                    API.get(API_ENDPOINTS.ADMIN.GET_FAQS).catch(() => ({ data: { data: [] } })),
+                    API.get(API_ENDPOINTS.ADMIN.GET_DAILY_TASKS).catch(() => ({ data: { data: { data: [] } } })),
+                    API.get(API_ENDPOINTS.ADMIN.GET_SCAN_HISTORY).catch(() => ({ data: { data: { data: [] } } })),
+                    API.get(API_ENDPOINTS.ADMIN.GET_ECO_POINTS).catch(() => ({ data: { data: { totalPoints: 0 } } })),
                 ]);
 
                 // throw new Error("Hanya Melihat UI!");

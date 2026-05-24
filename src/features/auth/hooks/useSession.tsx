@@ -37,12 +37,27 @@ export const useSession = () => {
     fetchUser();
   }, [fetchUser]);
 
+  const refetchUser = useCallback(async () => {
+    await fetchUser();
+    window.dispatchEvent(new Event('user-session-updated'));
+  }, [fetchUser]);
+
+  useEffect(() => {
+    const handleGlobalUpdate = () => {
+      fetchUser();
+    };
+    window.addEventListener('user-session-updated', handleGlobalUpdate);
+    return () => {
+      window.removeEventListener('user-session-updated', handleGlobalUpdate);
+    };
+  }, [fetchUser]);
+
   const isAuthenticated = !!userData?.data && !!token;
 
   return {
     userData,
     isAuthenticated,
     isLoading,
-    refetchUser: fetchUser,
+    refetchUser,
   };
 };

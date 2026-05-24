@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Plus, Search, Trash2, Edit2, ShieldCheck, Activity, X, AlertTriangle } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Trash2,
+  Edit2,
+  ShieldCheck,
+  Activity,
+  X,
+  AlertTriangle,
+} from "lucide-react";
 import { toast } from "sonner";
 import API from "@/lib/axios";
 import { API_ENDPOINTS } from "@/constants/apiEndpoints";
@@ -36,14 +45,25 @@ function CategoryModal({
     try {
       setLoading(true);
       if (isEdit && category) {
-        const url = API_ENDPOINTS.WASTE_CATEGORIES.UPDATE.replace(":id", category.id);
+        const url = API_ENDPOINTS.WASTE_CATEGORIES.UPDATE.replace(
+          ":id",
+          category.id,
+        );
         await API.patch(url, formData);
       } else {
         await API.post(API_ENDPOINTS.WASTE_CATEGORIES.CREATE, formData);
       }
-      onSuccess(isEdit ? "Kategori berhasil diperbarui!" : "Kategori berhasil ditambahkan!");
+      onSuccess(
+        isEdit
+          ? "Kategori berhasil diperbarui!"
+          : "Kategori berhasil ditambahkan!",
+      );
     } catch (err: any) {
-      toast.error(err.response?.data?.message || err.message || "Gagal menyimpan kategori");
+      toast.error(
+        err.response?.data?.message ||
+          err.message ||
+          "Gagal menyimpan kategori",
+      );
     } finally {
       setLoading(false);
     }
@@ -67,46 +87,65 @@ function CategoryModal({
         <div className="p-6 overflow-y-auto space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Nama Kategori</label>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                Nama Kategori
+              </label>
               <input
                 type="text"
                 value={formData.categoryName}
-                onChange={(e) => setFormData({ ...formData, categoryName: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, categoryName: e.target.value })
+                }
                 placeholder="cth: Organik"
                 className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Kode Kategori</label>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                Kode Kategori
+              </label>
               <input
                 type="text"
                 value={formData.categoryCode}
-                onChange={(e) => setFormData({ ...formData, categoryCode: e.target.value.toUpperCase() })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    categoryCode: e.target.value.toUpperCase(),
+                  })
+                }
                 placeholder="cth: ORG"
                 maxLength={5}
                 disabled={isEdit} // Mencegah perubahan kode setelah dibuat karena relasi/unique
-                className={`w-full h-11 px-4 rounded-xl border border-slate-200 transition-all text-sm font-medium ${isEdit ? 'bg-slate-100 text-slate-500 cursor-not-allowed' : 'bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500'}`}
+                className={`w-full h-11 px-4 rounded-xl border border-slate-200 transition-all text-sm font-medium ${isEdit ? "bg-slate-100 text-slate-500 cursor-not-allowed" : "bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"}`}
               />
             </div>
           </div>
-          
+
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">Deskripsi Lengkap</label>
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+              Deskripsi Lengkap
+            </label>
             <textarea
               rows={2}
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               placeholder="Jelaskan detail kategori ini..."
               className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">Tips Penanganan</label>
+            <label className="block text-sm font-bold text-slate-700 mb-2">
+              Tips Penanganan
+            </label>
             <textarea
               rows={2}
               value={formData.handlingTips}
-              onChange={(e) => setFormData({ ...formData, handlingTips: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, handlingTips: e.target.value })
+              }
               placeholder="Cara membuang jenis sampah ini..."
               className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium resize-none"
             />
@@ -114,28 +153,41 @@ function CategoryModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Poin Reward</label>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                Poin Reward
+              </label>
               <input
                 type="number"
                 value={formData.pointsReward}
-                onChange={(e) => setFormData({ ...formData, pointsReward: Number(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    pointsReward: Number(e.target.value),
+                  })
+                }
                 min={1}
                 className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
               />
             </div>
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">Warna (Hex)</label>
+              <label className="block text-sm font-bold text-slate-700 mb-2">
+                Warna (Hex)
+              </label>
               <div className="flex gap-2 items-center">
                 <input
                   type="color"
                   value={formData.colorHex}
-                  onChange={(e) => setFormData({ ...formData, colorHex: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, colorHex: e.target.value })
+                  }
                   className="size-11 rounded-xl cursor-pointer border-0 bg-transparent p-1"
                 />
                 <input
                   type="text"
                   value={formData.colorHex}
-                  onChange={(e) => setFormData({ ...formData, colorHex: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, colorHex: e.target.value })
+                  }
                   className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
                 />
               </div>
@@ -143,19 +195,23 @@ function CategoryModal({
           </div>
         </div>
 
-        <div className="p-6 border-t border-slate-100 flex gap-3 bg-slate-50 mt-auto">
+        <div className="flex gap-3 px-6 pb-6 pt-2">
           <button
             onClick={onClose}
-            className="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors"
+            className="flex-1 h-11 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors"
           >
             Batal
           </button>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 shadow-sm shadow-emerald-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 h-11 rounded-xl bg-linear-to-r from-emerald-600 to-teal-500 text-white text-sm font-bold shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Tambah Kategori"}
+            {loading
+              ? "Menyimpan..."
+              : isEdit
+                ? "Simpan Perubahan"
+                : "Tambah Kategori"}
           </button>
         </div>
       </div>
@@ -192,8 +248,12 @@ export default function AdminKategoriView() {
           <ShieldCheck className="absolute size-6 text-emerald-500 animate-pulse" />
         </div>
         <div className="text-center space-y-1">
-          <h3 className="text-lg font-bold text-slate-700 animate-pulse">Memuat Data...</h3>
-          <p className="text-sm font-medium text-slate-400">Menyiapkan manajemen kategori</p>
+          <h3 className="text-lg font-bold text-slate-700 animate-pulse">
+            Memuat Data...
+          </h3>
+          <p className="text-sm font-medium text-slate-400">
+            Menyiapkan manajemen kategori
+          </p>
         </div>
       </div>
     );
@@ -206,7 +266,9 @@ export default function AdminKategoriView() {
           <Activity className="size-8 text-rose-500" />
         </div>
         <div className="text-center space-y-1">
-          <h3 className="text-lg font-bold text-slate-700">Gagal Memuat Data</h3>
+          <h3 className="text-lg font-bold text-slate-700">
+            Gagal Memuat Data
+          </h3>
           <p className="text-sm font-medium text-slate-400">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -239,9 +301,12 @@ export default function AdminKategoriView() {
             <div className="size-12 rounded-full bg-rose-100 flex items-center justify-center mb-4 mx-auto">
               <AlertTriangle className="size-6 text-rose-600" />
             </div>
-            <h3 className="text-lg font-bold text-slate-800 text-center mb-2">Hapus Kategori?</h3>
+            <h3 className="text-lg font-bold text-slate-800 text-center mb-2">
+              Hapus Kategori?
+            </h3>
             <p className="text-sm text-slate-500 text-center mb-6">
-              Apakah Anda yakin ingin menghapus kategori ini? Data terkait mungkin akan terpengaruh.
+              Apakah Anda yakin ingin menghapus kategori ini? Data terkait
+              mungkin akan terpengaruh.
             </p>
             <div className="flex gap-3">
               <button
@@ -268,14 +333,15 @@ export default function AdminKategoriView() {
               Manajemen Kategori
             </h1>
             <p className="text-sm font-medium text-slate-500 max-w-xl leading-relaxed">
-              Kelola kategori jenis sampah dan tentukan Poin Reward dasar untuk setiap hasil scan pengguna.
+              Kelola kategori jenis sampah dan tentukan Poin Reward dasar untuk
+              setiap hasil scan pengguna.
             </p>
           </div>
           <button
             onClick={handleAdd}
-            className="group flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 text-white font-bold text-sm hover:bg-emerald-600 shadow-sm shadow-emerald-500/20 transition-all active:scale-95 whitespace-nowrap"
+            className="flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-r from-emerald-600 to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all whitespace-nowrap"
           >
-            <Plus className="size-5 transition-transform group-hover:rotate-90" />
+            <Plus className="size-4" />
             Tambah Kategori
           </button>
         </div>
@@ -319,13 +385,19 @@ export default function AdminKategoriView() {
               <tbody className="divide-y divide-slate-100">
                 {filteredCategories.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-16 text-center text-slate-400 font-medium">
+                    <td
+                      colSpan={5}
+                      className="px-6 py-16 text-center text-slate-400 font-medium"
+                    >
                       Tidak ada kategori ditemukan.
                     </td>
                   </tr>
                 ) : (
                   filteredCategories.map((cat) => (
-                    <tr key={cat.id} className="hover:bg-slate-50/80 transition-colors group">
+                    <tr
+                      key={cat.id}
+                      className="hover:bg-slate-50/80 transition-colors group"
+                    >
                       <td className="px-6 py-5">
                         <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
                           {cat.categoryCode}
@@ -333,14 +405,18 @@ export default function AdminKategoriView() {
                       </td>
                       <td className="px-6 py-5">
                         <div className="flex items-center gap-3">
-                          <div 
+                          <div
                             className="size-4 rounded-full shadow-sm"
-                            style={{ backgroundColor: cat.colorHex || '#cbd5e1' }}
+                            style={{
+                              backgroundColor: cat.colorHex || "#cbd5e1",
+                            }}
                           />
                           <div>
-                            <p className="text-sm font-bold text-[#1e293b] mb-0.5">{cat.categoryName}</p>
+                            <p className="text-sm font-bold text-[#1e293b] mb-0.5">
+                              {cat.categoryName}
+                            </p>
                             <p className="text-xs font-medium text-slate-400 truncate max-w-[200px]">
-                              {cat.description || '-'}
+                              {cat.description || "-"}
                             </p>
                           </div>
                         </div>
@@ -352,7 +428,7 @@ export default function AdminKategoriView() {
                       </td>
                       <td className="px-6 py-5">
                         <p className="text-xs font-medium text-slate-500 line-clamp-2 max-w-xs">
-                          {cat.handlingTips || '-'}
+                          {cat.handlingTips || "-"}
                         </p>
                       </td>
                       <td className="px-6 py-5">

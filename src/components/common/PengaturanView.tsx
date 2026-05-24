@@ -6,7 +6,7 @@ import {
   Lock,
   Loader2,
   CheckCircle2,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,8 +15,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { useSettingsState } from '../hooks/useSettingsState';
+} from "@/components/ui/alert-dialog";
+import { useSettingsState } from "@/hooks/useSettingsState";
 
 export default function PengaturanView() {
   const {
@@ -40,6 +40,7 @@ export default function PengaturanView() {
     avatarInputRef,
     handleAvatarChange,
     triggerAvatarUpload,
+    previewAvatarUrl,
   } = useSettingsState();
 
   return (
@@ -63,9 +64,9 @@ export default function PengaturanView() {
             <div className="size-24 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-slate-50">
               {isUploadingAvatar ? (
                 <Loader2 className="size-8 text-[#10b981] animate-spin" />
-              ) : user?.avatar_url ? (
+              ) : previewAvatarUrl || user?.avatar_url ? (
                 <img
-                  src={user.avatar_url}
+                  src={previewAvatarUrl || user.avatar_url}
                   alt="Profile"
                   className="size-full object-cover"
                 />
@@ -116,9 +117,12 @@ export default function PengaturanView() {
               <input
                 type="text"
                 defaultValue={user?.username}
-                onChange={onUsernameChange}
-                className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#10b981]/20 focus:border-[#10b981] transition-all text-sm font-medium"
+                disabled
+                className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 text-sm font-medium cursor-not-allowed"
               />
+              <p className="text-xs text-slate-400 font-medium">
+                Nama pengguna tidak dapat diubah.
+              </p>
             </div>
           </div>
 
@@ -128,7 +132,7 @@ export default function PengaturanView() {
             </label>
             <input
               type="email"
-              defaultValue={user?.email || ''}
+              defaultValue={user?.email || ""}
               disabled
               className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 text-sm font-medium cursor-not-allowed"
             />
@@ -213,7 +217,7 @@ export default function PengaturanView() {
             className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-linear-to-r from-[#10b981] to-[#34d399] text-white font-bold text-sm shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             {isSaving && <Loader2 className="size-4 animate-spin" />}
-            {isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
+            {isSaving ? "Menyimpan..." : "Simpan Perubahan"}
           </button>
         </div>
       </div>

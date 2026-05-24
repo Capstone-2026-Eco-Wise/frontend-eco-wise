@@ -23,3 +23,19 @@ export const getProfile = async () => {
   );
   return res.data.data;
 };
+
+export const updateProfile = async (fullName: string) => {
+  const res = await API.patch<{ message: string; data: any }>(
+    API_ENDPOINTS.USERS.UPDATE_PROFILE,
+    { fullName }
+  );
+  return res.data.data;
+};
+
+export const updatePassword = async (payload: { oldPassword: string; newPassword: string; confirmPassword: string }) => {
+  const res = await API.put<{ message: string; data: any }>(
+    API_ENDPOINTS.AUTH.UPDATE_PASSWORD,
+    payload
+  );
+  return res.data.data;
+};
