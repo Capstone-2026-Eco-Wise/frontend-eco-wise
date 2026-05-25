@@ -2,7 +2,7 @@ export type AuthResponse = {
   access_token: string;
   user: {
     fullName: string;
-    avatar_url: any;
+    avatar_url: string | null;
     id: string;
     role: string;
     email?: string;

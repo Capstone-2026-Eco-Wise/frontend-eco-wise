@@ -1,7 +1,7 @@
 import { useSession } from "@/features/auth/hooks/useSession";
 import useInput from "@/hooks/useInput";
 import { updateAvatar, updateProfile, updatePassword } from "@/services/userService";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -9,7 +9,10 @@ export const useSettingsState = () => {
   const { userData, refetchUser } = useSession();
   const navigate = useNavigate();
 
-  const [fullName, onFullNameChange] = useInput(userData?.data?.fullName);
+  const [fullName, setFullName] = useState("");
+  const onFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFullName(e.target.value);
+  };
   const [username, onUsernameChange] = useInput(userData?.data?.username);
 
   const [currentPassword, onCurrentPasswordChange] = useInput('');
@@ -29,20 +32,20 @@ export const useSettingsState = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      let anyUpdated = false;
-
       if (selectedAvatarFile) {
+        if (previewAvatarUrl) {
+          URL.revokeObjectURL(previewAvatarUrl);
+          setPreviewAvatarUrl(null);
+        }
         setIsUploadingAvatar(true);
         await updateAvatar(selectedAvatarFile);
         setSelectedAvatarFile(null);
         setIsUploadingAvatar(false);
-        anyUpdated = true;
       }
 
       const finalFullName = fullName || userData?.data?.fullName;
       if (finalFullName && finalFullName !== userData?.data?.fullName) {
         await updateProfile(finalFullName);
-        anyUpdated = true;
       }
 
       let passwordChanged = false;
@@ -69,6 +72,7 @@ export const useSettingsState = () => {
 
       if (passwordChanged) {
         localStorage.removeItem('accessToken');
+        await refetchUser();
         toast.info("Password telah dirubah, silakan login kembali");
         navigate("/login", { replace: true });
         return;
@@ -76,7 +80,11 @@ export const useSettingsState = () => {
 
       await refetchUser();
       setIsAlertOpen(true);
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       console.error("Gagal menyimpan pengaturan:", error);
       toast.error(
         error.response?.data?.message || "Gagal menyimpan perubahan",
@@ -91,6 +99,9 @@ export const useSettingsState = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (previewAvatarUrl) {
+      URL.revokeObjectURL(previewAvatarUrl);
+    }
     setSelectedAvatarFile(file);
     setPreviewAvatarUrl(URL.createObjectURL(file));
   };
@@ -98,6 +109,20 @@ export const useSettingsState = () => {
   const triggerAvatarUpload = () => {
     avatarInputRef.current?.click();
   };
+
+  useEffect(() => {
+    if(userData?.data?.fullName) {
+      setFullName(userData.data.fullName);
+    }
+  },[userData]);
+
+  useEffect(() => {
+    return () => {
+      if (previewAvatarUrl) {
+        URL.revokeObjectURL(previewAvatarUrl);
+      }
+    };
+  }, [previewAvatarUrl]);
 
   return {
     user: userData?.data || null,
@@ -123,5 +148,6 @@ export const useSettingsState = () => {
     handleAvatarChange,
     triggerAvatarUpload,
     previewAvatarUrl,
+    setFullName,
   };
 };

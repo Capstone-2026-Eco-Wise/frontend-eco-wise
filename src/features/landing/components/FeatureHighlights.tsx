@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function FeatureHighlights() {
   return (
-    <div id="fitur" className="bg-[#eff6ff] w-full pt-20 pb-32">
+    <div id="fitur" className="bg-[#eff6ff] dark:bg-slate-950 w-full pt-20 pb-32 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12">
           <div className="max-w-xl">

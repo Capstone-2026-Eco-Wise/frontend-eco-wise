@@ -1,9 +1,34 @@
+import { ArrowLeft, Sun, Moon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { Link } from 'react-router-dom';
 import RegisterForm from '../features/auth/components/RegisterForm';
 
 export default function RegisterPage() {
+  const { theme, setTheme } = useTheme();
   return (
-    <div className="min-h-screen flex items-stretch bg-white dark:bg-slate-950">
+    <div className="min-h-screen flex items-stretch bg-white dark:bg-slate-950 relative">
+      {/* Back to Landing Button */}
+      <Link
+        to="/"
+        className="absolute top-5 left-5 z-50 flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-semibold hover:bg-white dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-200 dark:hover:border-emerald-800 transition-all shadow-sm hover:shadow-md group"
+      >
+        <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-0.5" />
+        Beranda
+      </Link>
+
+      {/* Dark Mode Toggle */}
+      <button
+        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        className="absolute top-5 right-5 z-50 p-2.5 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-600 transition-all shadow-sm hover:shadow-md cursor-pointer"
+        aria-label="Toggle theme"
+      >
+        {theme === 'dark' ? (
+          <Sun className="size-4 text-amber-500" />
+        ) : (
+          <Moon className="size-4" />
+        )}
+      </button>
+
       {/* Left decorative panel */}
       <div className="hidden lg:flex lg:w-2/5 bg-linear-to-br from-teal-400 via-emerald-500 to-cyan-400 relative overflow-hidden">
         {/* Blurred blobs */}

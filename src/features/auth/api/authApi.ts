@@ -1,5 +1,6 @@
 import axios from 'axios';
 import API from '@/lib/axios';
+import { saveToken } from '@/lib/token';
 import type {
   AuthResponse,
   LoginPayLoad,
@@ -19,7 +20,7 @@ export const login = async (
       loginPayload,
     );
 
-    localStorage.setItem('accessToken', data.data.access_token);
+    saveToken(data.data.access_token);
 
     const sessionUserData = await sessionUser(data.data.access_token);
 

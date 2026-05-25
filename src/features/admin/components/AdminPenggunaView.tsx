@@ -9,11 +9,19 @@ import {
   Plus,
 } from "lucide-react";
 import { useState } from "react";
-import useAdminUsers from "../hooks/useAdminUsers";
-import { API_ENDPOINTS } from "@/constants/apiEndpoints";
-
-import API from "@/lib/axios";
+import useAdminUsers, { type AdminUser } from "../hooks/useAdminUsers";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { adminUsersService } from "@/services/adminUsersService";
 
 function AddUserModal({
   onClose,
@@ -34,13 +42,15 @@ function AddUserModal({
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await API.post(`auth/sign-up`, formData);
+      await adminUsersService.createUser(formData);
       onSuccess("Pengguna baru berhasil ditambahkan!");
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       console.error(err);
-      toast.error(
-        err.response?.data?.message || err.message || "Gagal menambah pengguna",
-      );
+      toast.error(error.response?.data?.message || "Gagal menambah pengguna");
     } finally {
       setLoading(false);
     }
@@ -48,14 +58,14 @@ function AddUserModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-[28px] shadow-2xl w-full max-w-lg mx-4 animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white dark:bg-slate-900 rounded-[28px] border dark:border-slate-800 shadow-2xl w-full max-w-lg mx-4 animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-6 pb-0">
-          <h2 className="text-xl font-extrabold text-[#1e293b]">
+          <h2 className="text-xl font-extrabold text-[#1e293b] dark:text-white">
             Tambah Pengguna Baru
           </h2>
           <button
             onClick={onClose}
-            className="size-8 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            className="size-8 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           >
             <X className="size-5" />
           </button>
@@ -63,30 +73,84 @@ function AddUserModal({
 
         <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">Nama Lengkap</label>
-            <input type="text" value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium" />
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              Nama Lengkap
+            </label>
+            <input
+              type="text"
+              value={formData.fullName}
+              onChange={(e) =>
+                setFormData({ ...formData, fullName: e.target.value })
+              }
+              className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium text-slate-800 dark:text-slate-100"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">Username</label>
-            <input type="text" value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium" />
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              Username
+            </label>
+            <input
+              type="text"
+              value={formData.username}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
+              className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium text-slate-800 dark:text-slate-100"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">Email</label>
-            <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium" />
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              Email
+            </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium text-slate-800 dark:text-slate-100"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">Password</label>
-            <input type="password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium" />
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              Password
+            </label>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium text-slate-800 dark:text-slate-100"
+            />
           </div>
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">Konfirmasi Password</label>
-            <input type="password" value={formData.confirmPassword} onChange={e => setFormData({...formData, confirmPassword: e.target.value})} className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium" />
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+              Konfirmasi Password
+            </label>
+            <input
+              type="password"
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
+              className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm font-medium text-slate-800 dark:text-slate-100"
+            />
           </div>
         </div>
 
         <div className="flex gap-3 px-6 pb-6 pt-2">
-          <button onClick={onClose} className="flex-1 h-11 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">Batal</button>
-          <button onClick={handleSubmit} disabled={loading} className="flex-1 h-11 rounded-xl bg-linear-to-r from-emerald-600 to-teal-500 text-white text-sm font-bold shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+          <button
+            onClick={onClose}
+            className="flex-1 h-11 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-350 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            Batal
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="flex-1 h-11 rounded-xl bg-linear-to-r from-emerald-600 to-teal-500 text-white text-sm font-bold shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             {loading ? "Menyimpan..." : "Tambah Pengguna"}
           </button>
         </div>
@@ -100,7 +164,7 @@ function RoleModal({
   onClose,
   onSuccess,
 }: {
-  user: any;
+  user: AdminUser;
   onClose: () => void;
   onSuccess: (message: string) => void;
 }) {
@@ -110,13 +174,15 @@ function RoleModal({
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await API.patch(`users/${user.id}/role`, { role });
+      await adminUsersService.updateRole(user.id, role);
       onSuccess("Peran pengguna berhasil diperbarui!");
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
       console.error(err);
-      toast.error(
-        err.response?.data?.message || err.message || "Gagal mengubah peran",
-      );
+      toast.error(error.response?.data?.message || "Gagal mengubah peran");
     } finally {
       setLoading(false);
     }
@@ -124,14 +190,14 @@ function RoleModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-[28px] shadow-2xl w-full max-w-sm mx-4 animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-white dark:bg-slate-900 rounded-[28px] border dark:border-slate-800 shadow-2xl w-full max-w-sm mx-4 animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between p-6 pb-0">
-          <h2 className="text-xl font-extrabold text-[#1e293b]">
+          <h2 className="text-xl font-extrabold text-[#1e293b] dark:text-white">
             Ubah Peran Pengguna
           </h2>
           <button
             onClick={onClose}
-            className="size-8 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            className="size-8 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           >
             <X className="size-5" />
           </button>
@@ -139,13 +205,13 @@ function RoleModal({
 
         <div className="p-6 space-y-5">
           <div>
-            <label className="block text-sm font-bold text-slate-700 mb-2">
+            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
               Peran untuk {user.fullName}
             </label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
+              className="w-full h-11 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium text-slate-800 dark:text-slate-100"
             >
               <option value="admin">Admin</option>
               <option value="user">User</option>
@@ -156,7 +222,7 @@ function RoleModal({
         <div className="flex gap-3 px-6 pb-6">
           <button
             onClick={onClose}
-            className="flex-1 h-11 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors"
+            className="flex-1 h-11 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-350 text-sm font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             Batal
           </button>
@@ -176,26 +242,37 @@ function RoleModal({
 export default function AdminPenggunaView() {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
-  const { users, pagination, loading, refetch } = useAdminUsers(searchTerm, roleFilter);
+  const {
+    users,
+    pagination,
+    loading,
+    refetch,
+    handleNextPage,
+    handlePrevPage,
+  } = useAdminUsers(searchTerm, roleFilter);
 
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editTarget, setEditTarget] = useState<any>(undefined);
+  const [editTarget, setEditTarget] = useState<AdminUser | undefined>(
+    undefined,
+  );
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const url = API_ENDPOINTS.ADMIN.DELETE_USER.replace(":id", deleteTarget);
-      await API.delete(url);
-    setDeleteTarget(null);
+      await adminUsersService.deleteUser(deleteTarget);
+      setDeleteTarget(null);
       setSuccessMessage("Pengguna berhasil dihapus!");
       refetch();
-    } catch (err: any) {
-      toast.error(
-        err.response?.data?.message || err.message || "Gagal menghapus pengguna",
-      );
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      console.error(err);
+      toast.error(error.response?.data?.message || "Gagal menghapus pengguna");
     }
   };
 
@@ -211,7 +288,7 @@ export default function AdminPenggunaView() {
           onClose={() => setShowAddModal(false)}
         />
       )}
-      {showRoleModal && (
+      {showRoleModal && editTarget && (
         <RoleModal
           user={editTarget}
           onSuccess={(msg) => {
@@ -227,41 +304,50 @@ export default function AdminPenggunaView() {
       )}
 
       {/* Modal Konfirmasi Hapus */}
-      {deleteTarget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm mx-4 p-8 text-center animate-in zoom-in-95 duration-200">
-            <div className="size-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
+        <AlertDialogContent className="rounded-[28px] p-8 border-0 shadow-2xl max-w-sm bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+          <div className="flex flex-col items-center text-center space-y-4">
+            <div className="size-16 bg-rose-50 dark:bg-rose-950/30 text-rose-500 rounded-full flex items-center justify-center mb-2">
               <Trash2 className="size-8" />
             </div>
-            <h2 className="text-2xl font-bold text-[#1e293b] mb-2">
-              Hapus Pengguna?
-            </h2>
-            <p className="text-sm font-medium text-slate-500 mb-8 px-2">
-              Apakah kamu yakin ingin menghapus pengguna ini? Tindakan ini tidak bisa
-              dibatalkan.
-            </p>
-            <div className="flex gap-3">
-              <button
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-2xl font-extrabold text-[#1e293b] dark:text-white text-center">
+                Hapus Pengguna?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-slate-500 dark:text-slate-400 font-medium text-sm text-center pt-2">
+                Apakah kamu yakin ingin menghapus pengguna ini? Tindakan ini
+                tidak bisa dibatalkan.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="w-full flex gap-3 mt-6">
+              <AlertDialogCancel
                 onClick={() => setDeleteTarget(null)}
-                className="flex-1 h-12 rounded-full border-2 border-slate-100 text-slate-500 font-bold hover:bg-slate-50 transition-colors"
+                className="flex-1 h-12 rounded-full border-2 border-slate-100 dark:border-slate-850 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               >
                 Batal
-              </button>
-              <button
+              </AlertDialogCancel>
+              <AlertDialogAction
                 onClick={confirmDelete}
                 className="flex-1 h-12 rounded-full bg-rose-500 text-white font-bold hover:bg-rose-600 transition-colors"
               >
                 Hapus
-              </button>
-            </div>
+              </AlertDialogAction>
+            </AlertDialogFooter>
           </div>
-        </div>
-      )}
+        </AlertDialogContent>
+      </AlertDialog>
 
-      {successMessage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm mx-4 p-8 text-center animate-in zoom-in-95 duration-200">
-            <div className="size-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+      {/* Modal Sukses */}
+      <AlertDialog
+        open={!!successMessage}
+        onOpenChange={(open) => !open && setSuccessMessage(null)}
+      >
+        <AlertDialogContent className="rounded-[28px] p-8 border-0 shadow-2xl max-w-sm bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+          <div className="flex flex-col items-center text-center space-y-4">
+            <div className="size-16 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 rounded-full flex items-center justify-center mb-2">
               <div className="size-8 rounded-full border-2 border-emerald-500 flex items-center justify-center">
                 <svg
                   className="size-5"
@@ -278,31 +364,37 @@ export default function AdminPenggunaView() {
                 </svg>
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-[#1e293b] mb-2">Sukses!</h2>
-            <p className="text-sm font-medium text-slate-500 mb-8 px-4">
-              {successMessage}
-            </p>
-            <button
-              onClick={() => setSuccessMessage(null)}
-              className="w-full h-12 rounded-full bg-[#10b981] text-white font-bold hover:bg-[#059669] transition-colors"
-            >
-              Selesai
-            </button>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-2xl font-extrabold text-[#1e293b] dark:text-white text-center">
+                Sukses!
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-slate-500 dark:text-slate-400 font-medium text-sm text-center pt-2">
+                {successMessage}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="w-full mt-6">
+              <AlertDialogAction
+                onClick={() => setSuccessMessage(null)}
+                className="w-full h-12 rounded-full bg-[#10b981] text-white font-bold hover:bg-[#059669] transition-colors"
+              >
+                Selesai
+              </AlertDialogAction>
+            </AlertDialogFooter>
           </div>
-        </div>
-      )}
+        </AlertDialogContent>
+      </AlertDialog>
 
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-4xl font-extrabold text-[#1e293b] mb-2 tracking-tight">
+            <h1 className="text-4xl font-extrabold text-[#1e293b] dark:text-white mb-2 tracking-tight">
               Manajemen Pengguna
             </h1>
-            <p className="text-slate-500 font-medium text-base">
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-base">
               Kelola data pengguna, perbarui peran, dan pantau aktivitas akun.
             </p>
           </div>
-          <button 
+          <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-6 py-3 rounded-full bg-linear-to-r from-emerald-600 to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all whitespace-nowrap"
           >
@@ -311,9 +403,9 @@ export default function AdminPenggunaView() {
           </button>
         </div>
 
-        <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
           {/* Toolbar */}
-          <div className="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50">
+          <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50 dark:bg-slate-800/30">
             <div className="relative w-full sm:w-96">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
               <input
@@ -321,7 +413,7 @@ export default function AdminPenggunaView() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Cari nama atau email..."
-                className="w-full h-11 pl-11 pr-4 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
+                className="w-full h-11 pl-11 pr-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-medium"
               />
             </div>
             <div className="relative w-full sm:w-auto">
@@ -329,7 +421,7 @@ export default function AdminPenggunaView() {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="w-full sm:w-auto h-11 pl-11 pr-10 rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-bold text-slate-600 cursor-pointer appearance-none"
+                className="w-full sm:w-auto h-11 pl-11 pr-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all text-sm font-bold text-slate-600 dark:text-slate-350 cursor-pointer appearance-none"
               >
                 <option value="">Semua Peran</option>
                 <option value="admin">Admin</option>
@@ -342,7 +434,7 @@ export default function AdminPenggunaView() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                <tr className="bg-slate-50 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
                   <th className="px-6 py-4">ID Pengguna</th>
                   <th className="px-6 py-4">Informasi Akun</th>
                   <th className="px-6 py-4">Peran</th>
@@ -351,100 +443,105 @@ export default function AdminPenggunaView() {
                   <th className="px-6 py-4 text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {loading ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-16 text-center">
                       <div className="flex flex-col items-center justify-center gap-3">
                         <div className="relative flex items-center justify-center">
-                          <div className="absolute size-12 rounded-full border-4 border-emerald-100 animate-ping opacity-75"></div>
-                          <div className="relative size-12 rounded-full border-4 border-slate-100 border-t-emerald-500 animate-spin"></div>
+                          <div className="absolute size-12 rounded-full border-4 border-emerald-100 dark:border-emerald-900/30 animate-ping opacity-75"></div>
+                          <div className="relative size-12 rounded-full border-4 border-slate-100 dark:border-slate-800 border-t-emerald-500 animate-spin"></div>
                         </div>
-                        <p className="text-sm font-medium text-slate-400 animate-pulse">Memuat Data...</p>
+                        <p className="text-sm font-medium text-slate-400 dark:text-slate-500 animate-pulse">
+                          Memuat Data...
+                        </p>
                       </div>
                     </td>
                   </tr>
                 ) : users.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-16 text-center text-slate-400 font-medium">
+                    <td
+                      colSpan={6}
+                      className="px-6 py-16 text-center text-slate-400 dark:text-slate-500 font-medium"
+                    >
                       Tidak ada pengguna yang ditemukan.
                     </td>
                   </tr>
                 ) : (
-                  users.map((user: any) => (
+                  users.map((user: AdminUser) => (
                     <tr
-                    key={user.id}
-                    className="hover:bg-slate-50/80 transition-colors group"
-                  >
-                    <td className="px-6 py-5">
-                      <span className="text-sm font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md">
-                        {user.id.substring(0, 8)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-5">
-                      <p className="text-sm font-bold text-[#1e293b] mb-0.5">
-                        {user.fullName}
-                      </p>
-                      <p className="text-xs font-medium text-slate-500">
-                        {user.email}
-                      </p>
-                    </td>
-                    <td className="px-6 py-5">
-                      <span
-                        className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold ${
-                          user.role === "admin"
-                            ? "bg-purple-50 text-purple-600 border border-purple-100"
-                            : "bg-slate-100 text-slate-600 border border-slate-200"
-                        }`}
-                      >
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-5">
-                      <div className="flex items-center gap-1.5">
-                        <>
-                          <CheckCircle2 className="size-4 text-emerald-500" />
-                          <span className="text-sm font-bold text-emerald-600">
-                            Aktif
-                          </span>
-                        </>
-                      </div>
-                    </td>
-                    <td className="px-6 py-5 text-sm font-medium text-slate-600">
-                      {new Date(user.created_at).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </td>
-                    <td className="px-6 py-5">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => {
-                            setEditTarget(user);
-                            setShowRoleModal(true);
-                          }}
-                          className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 transition-colors"
-                          title="Edit Peran"
+                      key={user.id}
+                      className="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors group"
+                    >
+                      <td className="px-6 py-5">
+                        <span className="text-sm font-bold text-slate-700 dark:text-slate-350 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-md">
+                          {user.id.substring(0, 8)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <p className="text-sm font-bold text-[#1e293b] dark:text-white mb-0.5">
+                          {user.fullName}
+                        </p>
+                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                          {user.email}
+                        </p>
+                      </td>
+                      <td className="px-6 py-5">
+                        <span
+                          className={`inline-flex px-2.5 py-1 rounded-full text-xs font-bold ${
+                            user.role === "admin"
+                              ? "bg-purple-50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/30"
+                              : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-350 border border-slate-200 dark:border-slate-700"
+                          }`}
                         >
-                          <Edit2 className="size-4" />
-                        </button>
-                        <button
-                          onClick={() => setDeleteTarget(user.id)}
-                          className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                          title="Hapus"
-                        >
-                          <Trash2 className="size-4" />
-                        </button>
-                        <button
-                          className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 transition-colors"
-                          title="Opsi Lain"
-                        >
-                          <MoreVertical className="size-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                          {user.role}
+                        </span>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-1.5">
+                          <>
+                            <CheckCircle2 className="size-4 text-emerald-500" />
+                            <span className="text-sm font-bold text-emerald-600 dark:text-emerald-450">
+                              Aktif
+                            </span>
+                          </>
+                        </div>
+                      </td>
+                      <td className="px-6 py-5 text-sm font-medium text-slate-600 dark:text-slate-350">
+                        {new Date(user.createdAt).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => {
+                              setEditTarget(user);
+                              setShowRoleModal(true);
+                            }}
+                            className="p-2 rounded-lg text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors"
+                            title="Edit Peran"
+                          >
+                            <Edit2 className="size-4" />
+                          </button>
+                          <button
+                            onClick={() => setDeleteTarget(user.id)}
+                            className="p-2 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+                            title="Hapus"
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
+                          <button
+                            className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            title="Opsi Lain"
+                          >
+                            <MoreVertical className="size-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
                   ))
                 )}
               </tbody>
@@ -452,21 +549,34 @@ export default function AdminPenggunaView() {
           </div>
 
           {/* Pagination */}
-          <div className="p-6 border-t border-slate-100 flex items-center justify-between text-sm font-medium text-slate-500 bg-slate-50/30">
+          <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-sm font-medium text-slate-500 dark:text-slate-450 bg-slate-50/30 dark:bg-slate-800/20">
             <p>
-              Menampilkan {users.length > 0 ? (pagination.page - 1) * pagination.limit + 1 : 0} hingga{" "}
-              {Math.min(pagination.page * pagination.limit, pagination.totalData)} dari {pagination.totalData} pengguna
+              Menampilkan{" "}
+              {users.length > 0
+                ? (pagination.page - 1) * pagination.limit + 1
+                : 0}{" "}
+              hingga{" "}
+              {Math.min(
+                pagination.page * pagination.limit,
+                pagination.totalData,
+              )}{" "}
+              dari {pagination.totalData} pengguna
             </p>
             <div className="flex gap-2">
               <button
-                className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50"
+                onClick={handlePrevPage}
+                className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
                 disabled={pagination.page <= 1}
               >
                 Sebelumnya
               </button>
               <button
-                className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-50"
-                disabled={pagination.page >= pagination.totalPage || pagination.totalPage === 0}
+                onClick={handleNextPage}
+                className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
+                disabled={
+                  pagination.page >= pagination.totalPage ||
+                  pagination.totalPage === 0
+                }
               >
                 Selanjutnya
               </button>

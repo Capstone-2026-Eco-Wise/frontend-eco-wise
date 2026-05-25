@@ -1,10 +1,10 @@
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { type FormEvent } from 'react';
-import { HiEye, HiEyeOff } from 'react-icons/hi';
-import { MdEmail, MdPerson } from 'react-icons/md';
-import { useRegisterState } from '../hooks/useRegisterState';
-import { useRegister } from '../hooks/useRegister';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { type FormEvent } from "react";
+import { HiEye, HiEyeOff } from "react-icons/hi";
+import { MdEmail, MdPerson } from "react-icons/md";
+import { useRegisterState } from "../hooks/useRegisterState";
+import { useRegister } from "../hooks/useRegister";
 
 export default function RegisterForm() {
   const {
@@ -38,8 +38,9 @@ export default function RegisterForm() {
     setLoading(true);
     try {
       await handleRegister();
-    } catch (err: any) {
-      setError(err.message || 'Registrasi gagal! Silakan coba lagi.');
+    } catch (err) {
+      const error = err as { message?: string };
+      setError(error.message || "Registrasi gagal! Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
@@ -140,7 +141,7 @@ export default function RegisterForm() {
         <div className="relative">
           <Input
             id="reg-password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             placeholder="••••••••"
             value={password}
             onChange={onPasswordChange}
@@ -199,7 +200,7 @@ export default function RegisterForm() {
         disabled={loading}
         className="h-11 w-full rounded-xl text-sm font-semibold text-white bg-linear-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 shadow-md shadow-emerald-500/30 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[0.99]"
       >
-        {loading ? 'Membuat akun...' : 'Buat Akun'}
+        {loading ? "Membuat akun..." : "Buat Akun"}
       </button>
     </form>
   );

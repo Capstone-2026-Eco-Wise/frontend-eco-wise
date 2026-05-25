@@ -12,7 +12,7 @@ export default function DashboardLayout({
   navLinks,
 }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#f4f7fb] font-sans">
+    <div className="min-h-screen flex flex-col bg-[#f4f7fb] dark:bg-slate-950 font-sans transition-colors duration-300">
       <Navbar navLinks={navLinks} />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-10">

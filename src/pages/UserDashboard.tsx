@@ -6,6 +6,7 @@ export default function UserDashboard() {
     { id: '/dashboard', name: 'Beranda', path: '/dashboard' },
     { id: '/dashboard/scan', name: 'Pemindai', path: '/dashboard/scan' },
     { id: '/dashboard/riwayat', name: 'Riwayat', path: '/dashboard/riwayat' },
+    { id: '/dashboard/leaderboard', name: 'Klasemen', path: '/dashboard/leaderboard' },
   ];
 
   return (

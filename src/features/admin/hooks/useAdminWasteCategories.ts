@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import API from "@/lib/axios";
-import { API_ENDPOINTS } from "@/constants/apiEndpoints";
+import { wasteCategoriesService } from "@/services/wasteCategoriesService";
 import type { WasteCategory } from "@/services/wasteCategoriesService";
 import { toast } from "sonner";
 
@@ -19,14 +18,15 @@ export default function useAdminWasteCategories() {
     try {
       setLoading(true);
       setError(null);
-      const res = await API.get(API_ENDPOINTS.WASTE_CATEGORIES.GET_ALL);
-      setCategories(res.data.data || []);
-    } catch (err: any) {
+      const data = await wasteCategoriesService.getAll();
+      setCategories(data);
+    } catch (err) {
+      const error = err as { response?: { status: number; data?: { message?: string } }; message?: string };
       // Jika error karena database kosong, kita biarkan saja list kosong
-      if (err.response?.status === 404) {
+      if (error.response?.status === 404) {
         setCategories([]);
       } else {
-        const message = err.response?.data?.message || err.message || "Gagal memuat kategori";
+        const message = error.response?.data?.message || error.message || "Gagal memuat kategori";
         setError(message);
         toast.error(message);
       }
@@ -43,13 +43,13 @@ export default function useAdminWasteCategories() {
     if (!deleteTarget) return;
 
     try {
-      const url = API_ENDPOINTS.WASTE_CATEGORIES.DELETE.replace(":id", deleteTarget);
-      await API.delete(url);
+      await wasteCategoriesService.delete(deleteTarget);
       setDeleteTarget(null);
       toast.success("Kategori berhasil dihapus!");
       fetchCategories();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || err.message || "Gagal menghapus kategori");
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      toast.error(error.response?.data?.message || "Gagal menghapus kategori");
     }
   };
 

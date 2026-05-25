@@ -1,18 +1,14 @@
 import { buttonVariants } from '@/components/ui/button';
 import { useSession } from '@/features/auth/hooks/useSession';
 import { cn } from '@/lib/utils';
-import { Leaf } from 'lucide-react';
+import { Leaf, Sun, Moon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { Link } from 'react-router-dom';
 
 export default function LandingNavbar() {
   const { userData } = useSession();
-  let redirectPath;
-
-  if (userData?.data?.role === 'user') {
-    redirectPath = '/dashboard';
-  } else if (userData?.data?.role === 'admin') {
-    redirectPath = '/admin';
-  } 
+  const { theme, setTheme } = useTheme();
+  const redirectPath = userData?.data?.role === 'admin' ? '/admin' : '/dashboard';
 
   const scrollToSection = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -69,7 +65,19 @@ export default function LandingNavbar() {
           </a>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors focus:outline-none border border-slate-100 dark:border-slate-800 flex items-center justify-center shrink-0 cursor-pointer"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <Sun className="size-4.5 text-amber-500" />
+            ) : (
+              <Moon className="size-4.5 text-slate-500" />
+            )}
+          </button>
+
           {userData ? (
             <Link
               to={redirectPath}

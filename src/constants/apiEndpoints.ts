@@ -10,6 +10,11 @@ export const API_ENDPOINTS = {
     UPDATE_AVATAR: 'users/me/avatar',
     UPDATE_PROFILE: 'users/me/profile',
   },
+
+  USER_TASKS_COMPLETION: {
+    COMPLETE: 'user-task-completions/:taskId',
+  },
+
   SCAN_HISTORY: {
     GET_ALL: 'scan-history',
     CREATE: 'scan-history',
@@ -18,6 +23,7 @@ export const API_ENDPOINTS = {
   ECO_POINTS: {
     GET_STREAK: 'eco-points/streak',
     UPDATE: 'eco-points',
+    GET_LEADERBOARD: 'eco-points/leaderboard',
   },
   DAILY_TASKS: {
     GET_ALL: 'daily-tasks',
@@ -48,6 +54,7 @@ export const API_ENDPOINTS = {
     GET_SCAN_HISTORY: 'scan-history',
     GET_ECO_POINTS: 'eco-points/streak',
     GET_USERS: 'users',
-    DELETE_USER: 'users/:id', // blm ada
+    DELETE_USER: 'users/:id',
+    GET_DASHBOARD_STATS: 'statistics',
   }
 } as const;

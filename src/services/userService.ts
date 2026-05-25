@@ -5,7 +5,7 @@ export const updateAvatar = async (imageFile: File) => {
   const formData = new FormData();
   formData.append('avatar', imageFile);
 
-  const res = await API.patch<{ message: string; data: any }>(
+  const res = await API.patch<{ message: string; data: unknown }>(
     API_ENDPOINTS.USERS.UPDATE_AVATAR,
     formData,
     {
@@ -18,14 +18,14 @@ export const updateAvatar = async (imageFile: File) => {
 };
 
 export const getProfile = async () => {
-  const res = await API.get<{ message: string; data: any }>(
+  const res = await API.get<{ message: string; data: unknown }>(
     API_ENDPOINTS.AUTH.ME
   );
   return res.data.data;
 };
 
 export const updateProfile = async (fullName: string) => {
-  const res = await API.patch<{ message: string; data: any }>(
+  const res = await API.patch<{ message: string; data: unknown }>(
     API_ENDPOINTS.USERS.UPDATE_PROFILE,
     { fullName }
   );
@@ -33,7 +33,7 @@ export const updateProfile = async (fullName: string) => {
 };
 
 export const updatePassword = async (payload: { oldPassword: string; newPassword: string; confirmPassword: string }) => {
-  const res = await API.put<{ message: string; data: any }>(
+  const res = await API.put<{ message: string; data: unknown }>(
     API_ENDPOINTS.AUTH.UPDATE_PASSWORD,
     payload
   );

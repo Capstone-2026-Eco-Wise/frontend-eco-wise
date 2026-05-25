@@ -1,8 +1,9 @@
 import { API_ENDPOINTS } from '@/constants/apiEndpoints';
 import API from '@/lib/axios';
+import { getToken, clearToken } from '@/lib/token';
 
 export const logout = async () => {
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = getToken();
 
   const { data } = await API.delete(API_ENDPOINTS.AUTH.SIGN_OUT, {
     headers: {
@@ -10,7 +11,7 @@ export const logout = async () => {
     },
   });
 
-  localStorage.removeItem('accessToken');
+  clearToken();
 
   return {
     error: false,

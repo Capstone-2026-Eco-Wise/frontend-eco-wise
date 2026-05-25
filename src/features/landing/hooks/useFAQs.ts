@@ -12,7 +12,8 @@ export const useFAQs = (category?: string) => {
                 setLoading(true)
                 const data = await getPublicFaQs(category)
                 setFaqs(data)
-            } catch (error: any) {
+            } catch (err) {
+                const error = err as { response?: { data?: { message?: string } }; message?: string };
                 setError(error.response?.data?.message || error.message || 'Gagal memuat FAQ')
             } finally {
                 setLoading(false)

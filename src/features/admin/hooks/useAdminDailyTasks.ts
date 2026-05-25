@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import API from "@/lib/axios";
-import { API_ENDPOINTS } from "@/constants/apiEndpoints";
-import type { DailyTask } from "@/services/dailyTasksService";
+import {  dailyTasksService, type DailyTask } from "@/services/dailyTasksService";
 import { toast } from "sonner";
+import { wasteCategoriesService } from "@/services/wasteCategoriesService";
 
 export default function useAdminDailyTasks() {
    // data
@@ -23,11 +22,14 @@ export default function useAdminDailyTasks() {
       setLoading(true)
       setError(null)
       
-      const res = await API.get(API_ENDPOINTS.ADMIN.GET_DAILY_TASKS);
-      const data = res.data.data?.data || res.data.data || [];
-      setTasks(data);
-    } catch (err: any) {
-      const message = err.response?.data?.message || err.message || "Failed to load tasks";
+      const tasks = await dailyTasksService.getAdminDailyTasks();
+      setTasks(tasks);
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      const message = error.response?.data?.message || "Failed to load tasks";
       setError(message);
       toast.error(message);
     } finally {
@@ -39,8 +41,8 @@ export default function useAdminDailyTasks() {
     fetchTasks()
     const fetchCategories = async () => {
       try {
-        const res = await API.get(API_ENDPOINTS.WASTE_CATEGORIES.GET_ALL);
-        setCategories(res.data.data || []);
+        const categories = await wasteCategoriesService.getAll();
+        setCategories(categories);
       } catch (err) {
         console.error("Gagal memuat kategori", err);
       }
@@ -53,20 +55,22 @@ export default function useAdminDailyTasks() {
     if  (!deleteTarget) return;
 
     try {
-      const url = API_ENDPOINTS.DAILY_TASKS.DELETE.replace(":id", deleteTarget);
-      await API.delete(url);
+      await dailyTasksService.delete(deleteTarget);
       setDeleteTarget(null);
       setSuccessMessage("Task berhasil dihapus!");
       fetchTasks();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || err.message || "Gagal menghapus Task");
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      toast.error(error.response?.data?.message || "Gagal menghapus Task");
     }
   };
 
   const handleToggleActive = async (taskToToggle: DailyTask) => {
     try {
-      const url = API_ENDPOINTS.DAILY_TASKS.UPDATE.replace(":id", taskToToggle.id);
-      await API.put(url, {
+      await dailyTasksService.update(taskToToggle.id, {
         taskName: taskToToggle.taskName,
         description: taskToToggle.description,
         pointReward: taskToToggle.pointReward,
@@ -76,8 +80,12 @@ export default function useAdminDailyTasks() {
       });
       toast.success(`Task berhasil di${taskToToggle.isActive ? "nonaktifkan" : "aktifkan"}!`);
       fetchTasks();
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || err.message || "Gagal mengubah status Task");
+    } catch (err) {
+    const error = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      toast.error(error.response?.data?.message || error.message || "Gagal mengubah status Task");
     }
   };
   // --- FUNGSI UI HELPERS ---
@@ -132,4 +140,4 @@ export default function useAdminDailyTasks() {
     closeDeleteModal,
     closeSuccessModal,
   };
-    }
+};

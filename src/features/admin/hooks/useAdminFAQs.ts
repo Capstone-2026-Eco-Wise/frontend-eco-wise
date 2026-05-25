@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import API from "@/lib/axios";
-import { API_ENDPOINTS } from "@/constants/apiEndpoints";
-import { type FAQ } from "@/services/faqsService";
+import { type FAQ, faqsService } from "@/services/faqsService";
 
 export default function useAdminFAQs() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
@@ -11,11 +9,15 @@ export default function useAdminFAQs() {
   const fetchFaqs = async () => {
     try {
         setLoading(true);
-        const res = await API.get(API_ENDPOINTS.ADMIN.GET_FAQS);
-        setFaqs(res.data.data || []);
+        const data = await faqsService.getAdminFAQs();
+        setFaqs(data);
         setError(null);
-    } catch (err: any) {
-        setError(err.response?.data?.message || err.message || "Gagal mengambil data FAQ")
+    } catch (err) {
+      const error = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+        setError(error.response?.data?.message || "Gagal mengambil data FAQ")
     } finally {
         setLoading(false);
     }
