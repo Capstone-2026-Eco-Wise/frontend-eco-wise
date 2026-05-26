@@ -14,10 +14,15 @@ export default function useAdminFAQs() {
         setError(null);
     } catch (err) {
       const error = err as {
-        response?: { data?: { message?: string } };
+        response?: { status?: number; data?: { message?: string } };
         message?: string;
       };
-        setError(error.response?.data?.message || "Gagal mengambil data FAQ")
+      if (error.response?.status === 404) {
+        setFaqs([]);
+        setError(null);
+      } else {
+        setError(error.response?.data?.message || "Gagal mengambil data FAQ");
+      }
     } finally {
         setLoading(false);
     }
