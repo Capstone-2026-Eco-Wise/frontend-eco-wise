@@ -64,17 +64,20 @@ export const register = async (data: RegisterPayLoad) => {
     return {
       error: false,
       data: res.data.data,
+      message: res.data.message,
     };
   } catch (err) {
     if (axios.isAxiosError(err)) {
       return {
         error: true,
         data: err.response?.data,
+        message: err.response?.data?.message || 'Registrasi gagal! Silakan periksa detail Anda.',
       };
     }
   }
   return {
     error: true,
     data: null,
+    message: 'Terjadi kesalahan',
   };
 };

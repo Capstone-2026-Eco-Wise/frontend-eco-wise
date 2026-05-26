@@ -12,7 +12,7 @@ export const useRegister = ({
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    const { error, data } = await register({
+    const { error, message } = await register({
       fullName,
       username,
       email,
@@ -20,11 +20,11 @@ export const useRegister = ({
     });
 
     if (!error) {
-      toast.success(data?.message);
+      toast.success(message);
       navigate('/dashboard', { replace: true });
     } else {
       const errorMessage =
-        data?.message || 'Registrasi gagal! Silakan periksa detail Anda.';
+        message || 'Registrasi gagal! Silakan periksa detail Anda.';
       toast.error(errorMessage);
       throw new Error(errorMessage); // Throwing so the form can catch it if needed (or we can just let it finish)
     }
