@@ -112,7 +112,7 @@ export default function BerandaView() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Misi Harian */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-[32px] p-8 shadow-sm border border-slate-100 dark:border-slate-800 h-fit">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-[32px] p-4 sm:p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 h-fit">
           <h2 className="text-xl font-bold text-[#1e293b] dark:text-white mb-6">Misi Harian</h2>
           
           <div className="flex flex-col gap-4">
@@ -126,14 +126,14 @@ export default function BerandaView() {
               tasks.map((task) => (
                 <div
                   key={task.id}
-                  className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:bg-white dark:hover:bg-slate-800 hover:shadow-md transition-all group"
+                  className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:bg-white dark:hover:bg-slate-800 hover:shadow-md transition-all group"
                 >
                   <div className="flex items-start gap-4">
                     <div className="size-10 rounded-full bg-amber-100 dark:bg-amber-950/30 flex items-center justify-center shrink-0">
                       <Award className="size-5 text-amber-500" />
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-1.5">
                         <h3 className="text-base font-bold text-slate-800 dark:text-slate-200 group-hover:text-emerald-600 transition-colors">
                           {task.taskName}
                         </h3>
@@ -149,12 +149,12 @@ export default function BerandaView() {
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4 shrink-0">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-900/40">
+                  <div className="flex flex-wrap items-center justify-between sm:justify-end w-full sm:w-auto gap-3 shrink-0">
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-900/40">
                       +{task.pointReward} Poin
                     </span>
                     
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center flex-wrap gap-2 justify-end w-full sm:w-auto">
                       <input
                         type="file"
                         id={`proof-${task.id}`}
@@ -165,7 +165,7 @@ export default function BerandaView() {
                       />
                       <label
                         htmlFor={`proof-${task.id}`}
-                        className={`cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold shadow-sm hover:bg-emerald-700 transition-all ${
+                        className={`cursor-pointer inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2 rounded-xl bg-emerald-600 text-white text-xs sm:text-sm font-bold shadow-sm hover:bg-emerald-700 transition-all ${
                           completingTaskId === task.id ? "opacity-50 pointer-events-none" : ""
                         }`}
                       >
@@ -184,7 +184,7 @@ export default function BerandaView() {
 
                       <Link
                         to="/dashboard/scan"
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-100 text-sm font-bold shadow-sm hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2 rounded-xl bg-slate-900 dark:bg-slate-800 text-white dark:text-slate-100 text-xs sm:text-sm font-bold shadow-sm hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
                       >
                         <ScanLine className="size-4" />
                         Scan AI

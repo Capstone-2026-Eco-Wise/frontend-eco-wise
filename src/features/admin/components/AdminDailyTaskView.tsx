@@ -485,7 +485,7 @@ export default function AdminDailyTaskView() {
                         </button>
                       </td>
                       <td className="px-6 py-5">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-end gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => handleEdit(task)}
                             className="p-2 rounded-lg text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors"

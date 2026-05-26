@@ -508,14 +508,14 @@ export default function AdminPenggunaView() {
                         </div>
                       </td>
                       <td className="px-6 py-5 text-sm font-medium text-slate-600 dark:text-slate-350">
-                        {new Date(user.createdAt).toLocaleDateString("id-ID", {
+                        {user.created_at || user.createdAt ? new Date(user.created_at || user.createdAt || "").toLocaleDateString("id-ID", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",
-                        })}
+                        }) : "-"}
                       </td>
                       <td className="px-6 py-5">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-end gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => {
                               setEditTarget(user);

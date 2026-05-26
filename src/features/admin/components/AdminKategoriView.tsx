@@ -442,7 +442,7 @@ export default function AdminKategoriView() {
                         </p>
                       </td>
                       <td className="px-6 py-5">
-                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-end gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => handleEdit(cat)}
                             className="p-2 text-slate-400 dark:text-slate-555 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 rounded-lg transition-colors"

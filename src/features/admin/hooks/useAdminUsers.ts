@@ -8,7 +8,8 @@ export interface AdminUser {
   email: string;
   role: string;
   avatarUrl?: string | null;
-  createdAt: string;
+  createdAt?: string;
+  created_at?: string;
 }
 
 export interface PaginationMeta {
