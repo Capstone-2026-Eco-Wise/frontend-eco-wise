@@ -16,7 +16,7 @@ export default function HeroSection() {
         Bergabunglah dengan 10.000+ pejuang lingkungan hari ini
       </div>
 
-      <h1 className="text-6xl lg:text-8xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-8">
+      <h1 className="text-4xl sm:text-6xl lg:text-8xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-8">
         Jadikan Bumi <br />
         <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-500 to-teal-400">
           Tempat yang Lebih Baik.
