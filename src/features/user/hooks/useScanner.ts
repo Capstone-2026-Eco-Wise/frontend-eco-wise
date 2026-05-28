@@ -1,11 +1,16 @@
 import { useState, useRef, useEffect } from "react";
-import { createScanHistory, type ScanHistory } from "@/services/scanHistoryService";
+import { useSearchParams } from "react-router-dom";
+import { createScanHistory, type ScanResultResponse } from "@/services/scanHistoryService";
+import { userTaskCompletionsService } from "@/services/userTaskCompletionsService";
 
 export const useScanner = () => {
+  const [searchParams] = useSearchParams();
+  const taskId = searchParams.get("taskId");
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
-  const [scanResult, setScanResult] = useState<ScanHistory | null>(null);
+  const [scanResult, setScanResult] = useState<ScanResultResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
 
@@ -33,7 +38,14 @@ export const useScanner = () => {
     try {
       setIsScanning(true);
       setError(null);
-      const result = await createScanHistory(selectedFile);
+      
+      let result: ScanResultResponse;
+      if (taskId) {
+        result = (await userTaskCompletionsService.completeTask(taskId, selectedFile)) as ScanResultResponse;
+      } else {
+        result = await createScanHistory(selectedFile);
+      }
+      
       setScanResult(result);
     } catch (err) {
       const error = err as {

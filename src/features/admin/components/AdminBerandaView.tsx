@@ -1,20 +1,21 @@
+import LeaderboardWidget from '@/components/common/LeaderboardWidget';
 import {
-  Users,
   Activity,
   CheckCircle,
+  CheckCircle2,
+  Folder,
   ShieldCheck,
   Tag,
-  ToggleRight,
   ToggleLeft,
-  CheckCircle2,
-  XCircle,
+  ToggleRight,
   UserCheck,
-  Folder,
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import useAdminStats from "../hooks/useAdminStats";
-import useAdminFAQs from "../hooks/useAdminFAQs";
-import useAdminDailyTasks from "../hooks/useAdminDailyTasks";
+  Users,
+  XCircle,
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import useAdminDailyTasks from '../hooks/useAdminDailyTasks';
+import useAdminFAQs from '../hooks/useAdminFAQs';
+import useAdminStats from '../hooks/useAdminStats';
 
 export default function AdminBerandaView() {
   const { stats, loading, error } = useAdminStats();
@@ -72,60 +73,58 @@ export default function AdminBerandaView() {
 
   const statCards = [
     {
-      title: "Total Pengguna",
+      title: 'Total Pengguna',
       value: stats.totalUsers,
-      trend: "Lihat Detail →",
+      trend: 'Lihat Detail →',
       icon: <Users className="size-6 text-blue-500" />,
-      bg: "bg-blue-50 dark:bg-blue-950/30",
-      border: "border-blue-100 dark:border-blue-900/30",
-      linkTo: "/admin/user",
+      bg: 'bg-blue-50 dark:bg-blue-950/30',
+      border: 'border-blue-100 dark:border-blue-900/30',
+      linkTo: '/admin/user',
     },
     {
-      title: "Total Admin",
+      title: 'Total Admin',
       value: stats.totalAdmins,
-      trend: "Lihat Detail →",
+      trend: 'Lihat Detail →',
       icon: <UserCheck className="size-6 text-indigo-500" />,
-      bg: "bg-indigo-50 dark:bg-indigo-950/30",
-      border: "border-indigo-100 dark:border-indigo-900/30",
-      linkTo: "/admin/user",
+      bg: 'bg-indigo-50 dark:bg-indigo-950/30',
+      border: 'border-indigo-100 dark:border-indigo-900/30',
+      linkTo: '/admin/user',
     },
     {
-      title: "Kategori Sampah",
+      title: 'Kategori Sampah',
       value: stats.totalWasteCategories,
-      trend: "Lihat Detail →",
+      trend: 'Lihat Detail →',
       icon: <Folder className="size-6 text-rose-500" />,
-      bg: "bg-rose-50 dark:bg-rose-950/30",
-      border: "border-rose-100 dark:border-rose-900/30",
-      linkTo: "/admin/kategori",
+      bg: 'bg-rose-50 dark:bg-rose-950/30',
+      border: 'border-rose-100 dark:border-rose-900/30',
+      linkTo: '/admin/kategori',
     },
     {
-      title: "Total Misi Harian",
+      title: 'Total Misi Harian',
       value: stats.totalDailyTasks,
-      trend: "Lihat Detail →",
+      trend: 'Lihat Detail →',
       icon: <CheckCircle className="size-6 text-emerald-500" />,
-      bg: "bg-emerald-50 dark:bg-emerald-950/30",
-      border: "border-emerald-100 dark:border-emerald-900/30",
-      linkTo: "/admin/daily-tasks",
+      bg: 'bg-emerald-50 dark:bg-emerald-950/30',
+      border: 'border-emerald-100 dark:border-emerald-900/30',
+      linkTo: '/admin/daily-tasks',
     },
     {
-      title: "Total Pemindaian",
+      title: 'Total Pemindaian',
       value: stats.totalScans,
-      trend: "Real-time",
+      trend: 'Real-time',
       icon: <Activity className="size-6 text-amber-500" />,
-      bg: "bg-amber-50 dark:bg-amber-950/30",
-      border: "border-amber-100 dark:border-amber-900/30",
+      bg: 'bg-amber-50 dark:bg-amber-950/30',
+      border: 'border-amber-100 dark:border-amber-900/30',
     },
     {
-      title: "Total Poin Dibagikan",
+      title: 'Total Poin Dibagikan',
       value: stats.totalPoints,
-      trend: "Real-time",
+      trend: 'Real-time',
       icon: <ShieldCheck className="size-6 text-teal-500" />,
-      bg: "bg-teal-50 dark:bg-teal-950/30",
-      border: "border-teal-100 dark:border-teal-900/30",
+      bg: 'bg-teal-50 dark:bg-teal-950/30',
+      border: 'border-teal-100 dark:border-teal-900/30',
     },
   ];
-
-
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -152,8 +151,8 @@ export default function AdminBerandaView() {
                 <div
                   className={`flex items-center gap-1 text-[10px] font-extrabold px-2.5 py-1 rounded-full ${
                     stat.linkTo
-                      ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-450 group-hover:bg-emerald-600 dark:group-hover:bg-emerald-500 group-hover:text-white transition-all"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                      ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-450 group-hover:bg-emerald-600 dark:group-hover:bg-emerald-500 group-hover:text-white transition-all'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                   }`}
                 >
                   {stat.trend}
@@ -235,7 +234,7 @@ export default function AdminBerandaView() {
                     {faq.answer}
                   </p>
                   <div
-                    className={`mt-1 inline-flex items-center gap-1 text-xs font-bold ${faq.isActive ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"}`}
+                    className={`mt-1 inline-flex items-center gap-1 text-xs font-bold ${faq.isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`}
                   >
                     {faq.isActive ? (
                       <>
@@ -290,7 +289,7 @@ export default function AdminBerandaView() {
                     </span>
                   </div>
                   <div
-                    className={`mt-1 inline-flex items-center gap-1 text-xs font-bold ${task.isActive ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400 dark:text-slate-500"}`}
+                    className={`mt-1 inline-flex items-center gap-1 text-xs font-bold ${task.isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400 dark:text-slate-500'}`}
                   >
                     {task.isActive ? (
                       <>
@@ -321,6 +320,11 @@ export default function AdminBerandaView() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Leaderboard Klasemen */}
+        <div className="h-full">
+          <LeaderboardWidget showDetailsLink={false} />
         </div>
       </div>
     </div>

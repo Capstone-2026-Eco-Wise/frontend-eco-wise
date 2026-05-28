@@ -25,6 +25,9 @@ const PengaturanView = lazy(() => import("./components/common/PengaturanView"));
 const RiwayatView = lazy(
   () => import("./features/user/components/RiwayatView"),
 );
+const RiwayatMisiView = lazy(
+  () => import("./features/user/components/RiwayatMisiView"),
+);
 const ScannerView = lazy(
   () => import("./features/user/components/ScannerView"),
 );
@@ -32,6 +35,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const AdminRegisterPage = lazy(() => import("./pages/AdminRegisterPage"));
 const UserDashboard = lazy(() => import("./pages/UserDashboard"));
 const LeaderboardView = lazy(
   () => import("./features/user/components/LeaderboardView"),
@@ -61,6 +65,7 @@ function App() {
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/register/admin" element={<AdminRegisterPage />} />
           </Route>
 
           {/* Protected Admin Routes (Accessible only if Admin) */}
@@ -81,6 +86,7 @@ function App() {
               <Route index element={<BerandaView />} />
               <Route path="scan" element={<ScannerView />} />
               <Route path="riwayat" element={<RiwayatView />} />
+              <Route path="riwayat-misi" element={<RiwayatMisiView />} />
               <Route path="leaderboard" element={<LeaderboardView />} />
               <Route path="pengaturan" element={<PengaturanView />} />
             </Route>

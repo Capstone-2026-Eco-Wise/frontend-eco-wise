@@ -2,6 +2,7 @@ export const API_ENDPOINTS = {
   AUTH: {
     SIGN_IN: 'auth/sign-in',
     SIGN_UP: 'auth/sign-up',
+    SIGN_UP_ADMIN: 'auth/sign-up/admin',
     ME: 'users/me',
     SIGN_OUT: 'auth/sign-out',
     UPDATE_PASSWORD: 'auth/update-password',
@@ -13,6 +14,7 @@ export const API_ENDPOINTS = {
 
   USER_TASKS_COMPLETION: {
     COMPLETE: 'user-task-completions/:taskId',
+    GET_ALL: 'user-task-completions',
   },
 
   SCAN_HISTORY: {

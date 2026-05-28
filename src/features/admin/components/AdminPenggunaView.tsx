@@ -40,6 +40,11 @@ function AddUserModal({
   });
 
   const handleSubmit = async () => {
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Konfirmasi password tidak cocok!");
+      return;
+    }
+
     try {
       setLoading(true);
       await adminUsersService.createUser(formData);

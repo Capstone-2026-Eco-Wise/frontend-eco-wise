@@ -119,7 +119,6 @@ function CategoryModal({
                   })
                 }
                 placeholder="cth: ORG"
-                maxLength={5}
                 disabled={isEdit} // Mencegah perubahan kode setelah dibuat karena relasi/unique
                 className={`w-full h-11 px-4 rounded-xl border border-slate-200 transition-all text-sm font-medium ${isEdit ? "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 cursor-not-allowed" : "bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-slate-900 dark:text-slate-100"}`}
               />

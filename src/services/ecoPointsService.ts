@@ -24,6 +24,7 @@ export interface LeaderboardEntry {
   fullName: string;
   avatarUrl: string | null;
   totalPoints: number;
+  currentStreak: number;
   rank: number;
 }
 
@@ -41,19 +42,25 @@ export interface RawLeaderboardEntry {
   };
 }
 
-export const getLeaderboard = async (): Promise<LeaderboardEntry[]> => {
+export const getLeaderboard = async (
+  type: 'point' | 'streak' = 'point',
+): Promise<LeaderboardEntry[]> => {
   const res = await API.get<{ message: string; data: RawLeaderboardEntry[] }>(
-    API_ENDPOINTS.ECO_POINTS.GET_LEADERBOARD
+    API_ENDPOINTS.ECO_POINTS.GET_LEADERBOARD,
+    {
+      params: { type },
+    },
   );
-  
+
   const rawList = res.data.data || [];
-  
+
   return rawList.map((entry, index) => ({
     userId: entry.userId,
-    username: entry.user?.username || "user",
-    fullName: entry.user?.fullName || "Eco User",
+    username: entry.user?.username || 'user',
+    fullName: entry.user?.fullName || 'Eco User',
     avatarUrl: entry.user?.avatar_url || null,
     totalPoints: entry.totalPoints,
+    currentStreak: entry.currentStreak,
     rank: index + 1,
   }));
 };

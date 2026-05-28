@@ -1,8 +1,8 @@
-import { useLeaderboard } from "../hooks/useLeaderboard";
-import { Award, Trophy, Users, Shield, RefreshCw } from "lucide-react";
+import { useLeaderboard } from '../hooks/useLeaderboard';
+import { Award, Trophy, Users, Shield, RefreshCw, Flame } from 'lucide-react';
 
 export default function LeaderboardView() {
-  const { leaderboard, loading, error } = useLeaderboard();
+  const { leaderboard, type, setType, loading, error } = useLeaderboard();
 
   if (loading) {
     return (
@@ -55,34 +55,34 @@ export default function LeaderboardView() {
     switch (index) {
       case 0: // Juara 1
         return {
-          order: "sm:order-2",
-          cardBg: "bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/20 dark:to-slate-900/60 border-amber-200 dark:border-amber-900/30 shadow-amber-100/50 dark:shadow-none scale-105 z-10",
-          badgeColor: "bg-amber-500 text-white shadow-amber-200",
-          medalColor: "text-amber-500",
+          order: 'sm:order-2',
+          cardBg: 'bg-gradient-to-b from-amber-50 to-white dark:from-amber-950/20 dark:to-slate-900/60 border-amber-200 dark:border-amber-900/30 shadow-amber-100/50 dark:shadow-none scale-105 z-10',
+          badgeColor: 'bg-amber-500 text-white shadow-amber-200',
+          medalColor: 'text-amber-500',
           rank: 1,
         };
       case 1: // Juara 2
         return {
-          order: "sm:order-1",
-          cardBg: "bg-gradient-to-b from-slate-50 to-white dark:from-slate-800/40 dark:to-slate-900/60 border-slate-200 dark:border-slate-800 shadow-slate-100/50 dark:shadow-none",
-          badgeColor: "bg-slate-400 text-white shadow-slate-200",
-          medalColor: "text-slate-400",
+          order: 'sm:order-1',
+          cardBg: 'bg-gradient-to-b from-slate-50 to-white dark:from-slate-800/40 dark:to-slate-900/60 border-slate-200 dark:border-slate-800 shadow-slate-100/50 dark:shadow-none',
+          badgeColor: 'bg-slate-400 text-white shadow-slate-200',
+          medalColor: 'text-slate-400',
           rank: 2,
         };
       case 2: // Juara 3
         return {
-          order: "sm:order-3",
-          cardBg: "bg-gradient-to-b from-orange-50 to-white dark:from-orange-950/20 dark:to-slate-900/60 border-orange-200 dark:border-orange-900/30 shadow-orange-100/50 dark:shadow-none",
-          badgeColor: "bg-orange-600 text-white shadow-orange-200",
-          medalColor: "text-orange-600",
+          order: 'sm:order-3',
+          cardBg: 'bg-gradient-to-b from-orange-50 to-white dark:from-orange-950/20 dark:to-slate-900/60 border-orange-200 dark:border-orange-900/30 shadow-orange-100/50 dark:shadow-none',
+          badgeColor: 'bg-orange-600 text-white shadow-orange-200',
+          medalColor: 'text-orange-600',
           rank: 3,
         };
       default:
         return {
-          order: "",
-          cardBg: "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800",
-          badgeColor: "bg-slate-500",
-          medalColor: "text-slate-400",
+          order: '',
+          cardBg: 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800',
+          badgeColor: 'bg-slate-500',
+          medalColor: 'text-slate-400',
           rank: index + 1,
         };
     }
@@ -90,19 +90,49 @@ export default function LeaderboardView() {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="mb-8">
-        <h1 className="text-4xl font-extrabold text-[#1e293b] dark:text-white mb-2 tracking-tight">
-          Papan Peringkat Eco
-        </h1>
-        <p className="text-slate-500 dark:text-slate-400 font-medium text-base">
-          Apresiasi kontribusi terbaik para pejuang bumi hijau EcoWise.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+          <h1 className="text-4xl font-extrabold text-[#1e293b] dark:text-white mb-2 tracking-tight">
+            Papan Peringkat Eco
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 font-medium text-base">
+            Apresiasi kontribusi terbaik para pejuang bumi hijau EcoWise.
+          </p>
+        </div>
+
+        {/* Tab Switcher */}
+        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl w-full md:w-fit shrink-0">
+          <button
+            onClick={() => setType('point')}
+            className={`flex-1 md:flex-initial px-5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+              type === 'point'
+                ? 'bg-white dark:bg-slate-700 text-[#10b981] dark:text-emerald-450 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
+          >
+            <Shield className="size-4" />
+            Total Poin
+          </button>
+          <button
+            onClick={() => setType('streak')}
+            className={`flex-1 md:flex-initial px-5 py-2 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+              type === 'streak'
+                ? 'bg-white dark:bg-slate-700 text-[#10b981] dark:text-emerald-450 shadow-sm'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
+          >
+            <Flame className="size-4" />
+            Streak Harian
+          </button>
+        </div>
       </div>
 
       {leaderboard.length === 0 ? (
         <div className="bg-white rounded-[32px] p-12 text-center border border-slate-100 shadow-sm">
           <Users className="size-16 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-slate-700 mb-1">Klasemen Masih Kosong</h3>
+          <h3 className="text-lg font-bold text-slate-700 mb-1">
+            Klasemen Masih Kosong
+          </h3>
           <p className="text-slate-400 font-medium text-sm">
             Jadilah yang pertama untuk memindai sampah dan menyelesaikan misi hari ini!
           </p>
@@ -148,10 +178,27 @@ export default function LeaderboardView() {
                     </div>
 
                     <div className="flex items-center gap-1.5 px-4 py-1.5 bg-slate-100 dark:bg-slate-800/80 rounded-full">
-                      <Shield className="size-4 text-emerald-500 shrink-0" />
-                      <span className="text-sm font-extrabold text-slate-700 dark:text-slate-300">
-                        {user.totalPoints.toLocaleString()} <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Poin</span>
-                      </span>
+                      {type === 'point' ? (
+                        <>
+                          <Shield className="size-4 text-emerald-500 shrink-0" />
+                          <span className="text-sm font-extrabold text-slate-700 dark:text-slate-300">
+                            {user.totalPoints.toLocaleString()}{' '}
+                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                              Poin
+                            </span>
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Flame className="size-4 text-orange-500 shrink-0" fill="currentColor" />
+                          <span className="text-sm font-extrabold text-slate-700 dark:text-slate-300">
+                            {(user.currentStreak ?? 0).toLocaleString()}{' '}
+                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                              Streak
+                            </span>
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 );
@@ -163,7 +210,9 @@ export default function LeaderboardView() {
           {remaining.length > 0 && (
             <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden max-w-4xl mx-auto">
               <div className="px-8 py-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                <h3 className="text-lg font-bold text-[#1e293b] dark:text-white">Peringkat Lainnya</h3>
+                <h3 className="text-lg font-bold text-[#1e293b] dark:text-white">
+                  Peringkat Lainnya
+                </h3>
               </div>
               <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {remaining.map((user) => (
@@ -201,12 +250,29 @@ export default function LeaderboardView() {
                       </div>
                     </div>
 
-                    {/* Points */}
+                    {/* Points or Streak */}
                     <div className="flex items-center gap-1.5">
-                      <Shield className="size-4 text-emerald-500 shrink-0" />
-                      <span className="text-sm font-extrabold text-slate-800 dark:text-slate-200">
-                        {user.totalPoints.toLocaleString()} <span className="text-xs font-medium text-slate-400 dark:text-slate-500">Poin</span>
-                      </span>
+                      {type === 'point' ? (
+                        <>
+                          <Shield className="size-4 text-emerald-500 shrink-0" />
+                          <span className="text-sm font-extrabold text-slate-800 dark:text-slate-200">
+                            {user.totalPoints.toLocaleString()}{' '}
+                            <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
+                              Poin
+                            </span>
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Flame className="size-4 text-orange-500 shrink-0" fill="currentColor" />
+                          <span className="text-sm font-extrabold text-slate-800 dark:text-slate-200">
+                            {(user.currentStreak ?? 0).toLocaleString()}{' '}
+                            <span className="text-xs font-medium text-slate-400 dark:text-slate-500">
+                              Streak
+                            </span>
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
