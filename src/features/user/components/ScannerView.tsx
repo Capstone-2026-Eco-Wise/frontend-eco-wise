@@ -8,10 +8,14 @@ import {
   Recycle,
   Loader2,
   Image as ImageIcon,
-} from 'lucide-react';
-import { useScanner } from '../hooks/useScanner';
+} from "lucide-react";
+import { useScanner } from "../hooks/useScanner";
+import { useSearchParams } from "react-router-dom";
 
 export default function ScannerView() {
+  const [searchParams] = useSearchParams();
+  const taskId = searchParams.get("taskId");
+
   const {
     previewUrl,
     isScanning,
@@ -26,7 +30,7 @@ export default function ScannerView() {
     startCamera,
     stopCamera,
     capturePhoto,
-  } = useScanner();
+  } = useScanner(taskId);
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -166,7 +170,7 @@ export default function ScannerView() {
 
         {/* Right Panel: Scan Result */}
         <div
-          className={`w-full lg:w-[420px] shrink-0 bg-white dark:bg-slate-900 rounded-[32px] shadow-xl shadow-slate-200/50 dark:shadow-none p-8 border border-slate-100 dark:border-slate-800 flex flex-col relative overflow-hidden transition-all duration-700 ${!scanResult ? 'opacity-50 grayscale-[0.5]' : 'opacity-100'}`}
+          className={`w-full lg:w-[420px] shrink-0 bg-white dark:bg-slate-900 rounded-[32px] shadow-xl shadow-slate-200/50 dark:shadow-none p-8 border border-slate-100 dark:border-slate-800 flex flex-col relative overflow-hidden transition-all duration-700 ${!scanResult ? "opacity-50 grayscale-[0.5]" : "opacity-100"}`}
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#10b981]/5 rounded-full blur-2xl pointer-events-none" />
 
@@ -195,13 +199,13 @@ export default function ScannerView() {
               <div className="mb-6 relative z-10">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ccfbf1] dark:bg-teal-950/40 text-[#0f766e] dark:text-teal-400 text-[10px] font-extrabold tracking-widest mb-4 uppercase">
                   <Recycle className="size-3.5" />
-                  ID: {scanResult.categoryId.split('_')[0]}
+                  ID: {scanResult.categoryId.split("_")[0]}
                 </div>
                 <h2 className="text-[40px] font-extrabold text-[#1e293b] dark:text-white leading-tight mb-2">
                   Teridentifikasi
                 </h2>
                 <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
-                  Tingkat kepercayaan:{' '}
+                  Tingkat kepercayaan:{" "}
                   {(Number(scanResult.confidenceScore) * 100).toFixed(1)}%
                 </p>
               </div>
