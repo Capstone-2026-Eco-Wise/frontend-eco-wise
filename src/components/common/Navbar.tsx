@@ -1,11 +1,11 @@
 import { useLogout } from '@/features/auth/hooks/useLogout';
 import { useSession } from '@/features/auth/hooks/useSession';
-import { Leaf, Menu, X, Flame, Sun, Moon } from 'lucide-react';
+import { useEcoPoints } from '@/features/user/hooks/useEcoPoints';
+import { Flame, Leaf, Menu, Moon, Sun, X } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { useEcoPoints } from '@/features/user/hooks/useEcoPoints';
-import { useTheme } from 'next-themes';
 
 type NavbarProps = {
   navLinks: Array<{ id: string; name: string; path: string }>;
@@ -13,7 +13,9 @@ type NavbarProps = {
 
 export const Navbar = ({ navLinks }: NavbarProps) => {
   const { userData } = useSession();
-  const { pointsData, streak } = useEcoPoints();
+  const { pointsData, streak } = useEcoPoints({
+    enabled: userData?.data?.role === 'user',
+  });
   const { theme, setTheme } = useTheme();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -59,15 +61,17 @@ export const Navbar = ({ navLinks }: NavbarProps) => {
 
           <div className="flex items-center gap-4 relative">
             {userData?.data?.role === 'user' && pointsData && (
-              <div 
-                className="hidden sm:flex items-center gap-1 bg-[#fff7ed] dark:bg-orange-950/20 px-2.5 py-1 rounded-full border border-orange-100/50 dark:border-orange-900/30 mr-1 select-none" 
+              <div
+                className="hidden sm:flex items-center gap-1 bg-[#fff7ed] dark:bg-orange-950/20 px-2.5 py-1 rounded-full border border-orange-100/50 dark:border-orange-900/30 mr-1 select-none"
                 title={pointsData.message}
               >
-                <Flame 
-                  className={`size-4 ${streak.flameColor} ${streak.isAnimated ? 'hover:scale-110 transition-transform' : ''}`} 
-                  fill={streak.isLit ? 'currentColor' : 'none'} 
+                <Flame
+                  className={`size-4 ${streak.flameColor} ${streak.isAnimated ? 'hover:scale-110 transition-transform' : ''}`}
+                  fill={streak.isLit ? 'currentColor' : 'none'}
                 />
-                <span className={`text-xs font-extrabold ${streak.isLit ? 'text-orange-700 dark:text-orange-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                <span
+                  className={`text-xs font-extrabold ${streak.isLit ? 'text-orange-700 dark:text-orange-400' : 'text-slate-400 dark:text-slate-500'}`}
+                >
                   {streak.streakCount}
                 </span>
               </div>

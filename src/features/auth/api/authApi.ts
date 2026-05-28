@@ -5,6 +5,7 @@ import type {
   AuthResponse,
   LoginPayLoad,
   RegisterPayLoad,
+  AdminRegisterPayLoad,
   LoginResponseType,
   ReturnAuthType,
 } from '../types/auth';
@@ -72,6 +73,34 @@ export const register = async (data: RegisterPayLoad) => {
         error: true,
         data: err.response?.data,
         message: err.response?.data?.message || 'Registrasi gagal! Silakan periksa detail Anda.',
+      };
+    }
+  }
+  return {
+    error: true,
+    data: null,
+    message: 'Terjadi kesalahan',
+  };
+};
+
+export const registerAdmin = async (data: AdminRegisterPayLoad) => {
+  try {
+    const res = await API.post<{ message: string; data: AuthResponse }>(
+      API_ENDPOINTS.AUTH.SIGN_UP_ADMIN,
+      data,
+    );
+
+    return {
+      error: false,
+      data: res.data.data,
+      message: res.data.message,
+    };
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      return {
+        error: true,
+        data: err.response?.data,
+        message: err.response?.data?.message || 'Registrasi admin gagal! Silakan periksa detail Anda.',
       };
     }
   }

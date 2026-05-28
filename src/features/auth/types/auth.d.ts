@@ -25,6 +25,10 @@ export type RegisterPayLoad = {
   username: string;
 };
 
+export type AdminRegisterPayLoad = RegisterPayLoad & {
+  adminSecret: string;
+};
+
 export type LoginResponseType = {
   data: {
     access_token: string;

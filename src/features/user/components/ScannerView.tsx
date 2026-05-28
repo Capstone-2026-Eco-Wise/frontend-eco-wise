@@ -1,21 +1,18 @@
 import {
+  AlertCircle,
   Camera,
-  Upload,
   CheckCircle2,
   Droplets,
-  Trash2,
-  Leaf,
-  Recycle,
-  Loader2,
   Image as ImageIcon,
+  Leaf,
+  Loader2,
+  Recycle,
+  Trash2,
+  Upload,
 } from "lucide-react";
 import { useScanner } from "../hooks/useScanner";
-import { useSearchParams } from "react-router-dom";
 
 export default function ScannerView() {
-  const [searchParams] = useSearchParams();
-  const taskId = searchParams.get("taskId");
-
   const {
     previewUrl,
     isScanning,
@@ -30,7 +27,7 @@ export default function ScannerView() {
     startCamera,
     stopCamera,
     capturePhoto,
-  } = useScanner(taskId);
+  } = useScanner();
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -49,10 +46,10 @@ export default function ScannerView() {
         <div className="flex-1 bg-white dark:bg-slate-900 rounded-[32px] p-10 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-[#10b981]/50 dark:hover:border-emerald-500/50 transition-colors group min-h-[500px] overflow-hidden relative">
           {isScanning && (
             <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-xs flex flex-col items-center justify-center z-20 rounded-[30px] animate-in fade-in duration-300">
-              <div className="relative flex items-center justify-center">
-                <div className="size-16 rounded-full border-4 border-emerald-500/20 animate-ping opacity-75"></div>
-                <div className="absolute size-16 rounded-full border-4 border-transparent border-t-emerald-400 animate-spin"></div>
-                <Recycle className="size-6 text-emerald-400 animate-pulse" />
+              <div className="relative flex items-center justify-center size-20">
+                <div className="absolute inset-0 rounded-full border-4 border-emerald-500/20 animate-ping opacity-75"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-emerald-400 animate-spin"></div>
+                <Recycle className="size-8 text-emerald-400 relative z-10 animate-pulse" />
               </div>
               <p className="mt-4 text-white text-sm font-bold tracking-wide animate-pulse">
                 AI sedang menganalisis gambar...
@@ -162,9 +159,21 @@ export default function ScannerView() {
             )}
           </div>
           {error && (
-            <p className="mt-4 text-sm font-medium text-red-500 text-center">
-              {error}
-            </p>
+            <div className="mt-6 w-full animate-in fade-in zoom-in-95 duration-300">
+              <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-2xl p-4 flex gap-3 shadow-sm shadow-rose-100 dark:shadow-none">
+                <div className="size-10 rounded-full bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center shrink-0">
+                  <AlertCircle className="size-5 text-rose-600 dark:text-rose-400" />
+                </div>
+                <div className="flex-1 pt-0.5">
+                  <h4 className="text-sm font-bold text-rose-800 dark:text-rose-300 mb-1">
+                    Ups, Terjadi Kesalahan!
+                  </h4>
+                  <p className="text-sm font-medium text-rose-600/90 dark:text-rose-400/90 leading-relaxed">
+                    {error}
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
@@ -176,11 +185,17 @@ export default function ScannerView() {
 
           <div className="flex items-center justify-between mb-6 relative z-10">
             <span className="text-xs font-bold text-[#10b981] dark:text-emerald-400 tracking-wider">
-              HASIL PEMINDAIAN
+              {scanResult?.completedTask ? 'STATUS MISI' : 'HASIL PEMINDAIAN'}
             </span>
             {scanResult && (
-              <div className="size-5 rounded-full bg-[#10b981] flex items-center justify-center">
-                <CheckCircle2 className="size-4 text-white" />
+              <div
+                className={`size-5 rounded-full flex items-center justify-center ${scanResult.completedTask?.isCompleted === false ? 'bg-rose-500' : 'bg-[#10b981]'}`}
+              >
+                {scanResult.completedTask?.isCompleted === false ? (
+                  <AlertCircle className="size-4 text-white" />
+                ) : (
+                  <CheckCircle2 className="size-4 text-white" />
+                )}
               </div>
             )}
           </div>
@@ -197,32 +212,67 @@ export default function ScannerView() {
           ) : (
             <>
               <div className="mb-6 relative z-10">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ccfbf1] dark:bg-teal-950/40 text-[#0f766e] dark:text-teal-400 text-[10px] font-extrabold tracking-widest mb-4 uppercase">
-                  <Recycle className="size-3.5" />
-                  ID: {scanResult.categoryId.split("_")[0]}
+                <div
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-widest mb-4 uppercase ${scanResult.completedTask?.isCompleted === false ? 'bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400' : 'bg-[#ccfbf1] dark:bg-teal-950/40 text-[#0f766e] dark:text-teal-400'}`}
+                >
+                  {scanResult.completedTask ? (
+                    <>
+                      {scanResult.completedTask.isCompleted
+                        ? 'MISI BERHASIL'
+                        : 'MISI GAGAL'}
+                    </>
+                  ) : (
+                    <>
+                      <Recycle className="size-3.5" />
+                      ID:{' '}
+                      {scanResult.scanHistory?.categoryId?.split('_')[0] ||
+                        'UNKNOWN'}
+                    </>
+                  )}
                 </div>
-                <h2 className="text-[40px] font-extrabold text-[#1e293b] dark:text-white leading-tight mb-2">
-                  Teridentifikasi
+
+                <h2 className="text-[36px] font-extrabold leading-tight mb-3">
+                  <span className="text-transparent bg-clip-text bg-linear-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300 drop-shadow-sm">
+                    {scanResult.aiResult?.labelAi.split('_').join(' ')}
+                  </span>
                 </h2>
+
                 <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
-                  Tingkat kepercayaan:{" "}
-                  {(Number(scanResult.confidenceScore) * 100).toFixed(1)}%
+                  Tingkat kepercayaan:{' '}
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                    {(
+                      Number(scanResult.scanHistory?.confidenceScore || 0) * 100
+                    ).toFixed(1)}
+                    %
+                  </span>
                 </p>
               </div>
 
-              <div className="bg-[#eff6ff] dark:bg-blue-950/30 rounded-2xl p-4 flex items-center gap-4 mb-8 relative z-10">
-                <div className="size-10 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center shrink-0 shadow-sm">
-                  <Leaf className="size-5 text-[#10b981]" />
+              {scanResult.completedTask && (
+                <div
+                  className={`rounded-2xl p-4 flex items-center gap-4 mb-8 relative z-10 ${scanResult.completedTask?.isCompleted === false ? 'bg-rose-50 dark:bg-rose-950/30' : 'bg-[#eff6ff] dark:bg-blue-950/30'}`}
+                >
+                  <div
+                    className={`size-10 rounded-full flex items-center justify-center shrink-0 shadow-sm ${scanResult.completedTask?.isCompleted === false ? 'bg-white dark:bg-slate-800' : 'bg-white dark:bg-slate-800'}`}
+                  >
+                    <Leaf
+                      className={`size-5 ${scanResult.completedTask?.isCompleted === false ? 'text-rose-500' : 'text-[#10b981]'}`}
+                    />
+                  </div>
+                  <div>
+                    <p
+                      className={`text-sm font-extrabold ${scanResult.completedTask?.isCompleted === false ? 'text-rose-800 dark:text-rose-200' : 'text-slate-800 dark:text-slate-200'}`}
+                    >
+                      +{scanResult.completedTask.pointAwarded} Poin Eco
+                    </p>
+                    <p className="text-xs font-medium text-slate-500 dark:text-slate-450">
+                      {scanResult.completedTask.isCompleted
+                        ? 'Bonus poin misi berhasil didapatkan!'
+                        : 'Sayang sekali, poin misi tidak didapat.'}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-extrabold text-slate-800 dark:text-slate-200">
-                    +{scanResult.pointEarned} Poin Eco
-                  </p>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-450">
-                    Berhasil masuk ke riwayatmu!
-                  </p>
-                </div>
-              </div>
+              )}
 
               <div className="mb-8 flex-1 relative z-10">
                 <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-5">
@@ -231,12 +281,14 @@ export default function ScannerView() {
                 <div className="space-y-5">
                   <div className="flex gap-4">
                     <Droplets className="size-5 text-[#10b981] shrink-0 mt-0.5" />
-                    <div>
+                    <div className="flex-1">
                       <p className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1">
-                        Cek Riwayat
+                        Tips Pengelolaan
                       </p>
                       <p className="text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed pr-4">
-                        Barang ini sudah tercatat otomatis di tab Riwayat kamu.
+                        {scanResult.completedTask 
+                          ? (scanResult.aiResult?.tips || scanResult.category?.handlingTips || 'Panduan daur ulang standar berlaku untuk jenis sampah ini.') 
+                          : (scanResult.category?.handlingTips || 'Panduan daur ulang standar berlaku untuk jenis sampah ini.')}
                       </p>
                     </div>
                   </div>
@@ -244,11 +296,16 @@ export default function ScannerView() {
                     <Trash2 className="size-5 text-[#10b981] shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1">
-                        Buang dengan Benar
+                        {scanResult.completedTask
+                          ? 'Kembali ke Dashboard'
+                          : 'Cek Riwayat'}
                       </p>
                       <p className="text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed pr-4">
-                        Pastikan sampah dibuang ke tempat yang sesuai dengan
-                        kategorinya.
+                        {scanResult.completedTask
+                          ? scanResult.completedTask.isCompleted
+                            ? 'Tugas kamu sudah selesai. Silakan cek perkembangan misimu di Dashboard.'
+                            : 'Barang tidak sesuai dengan kategori tugas. Silakan coba pindai barang yang tepat.'
+                          : 'Barang ini sudah tercatat otomatis di tab Riwayat kamu. Pastikan membuang sampah pada tempat yang sesuai dengan kategorinya.'}
                       </p>
                     </div>
                   </div>
