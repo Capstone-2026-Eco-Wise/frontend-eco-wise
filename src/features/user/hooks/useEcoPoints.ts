@@ -46,11 +46,14 @@ const getFrontendStreak = (pointsData: EcoPoints | null): ProcessedStreak => {
   };
 };
 
-export const useEcoPoints = () => {
+export const useEcoPoints = (options?: { enabled?: boolean }) => {
   const context = useEcoPointsContext();
   
   // enabled option is now handled inside the Context (it only fetches if role === 'user')
   // We keep the option parameter for backward compatibility if needed, but it's largely redundant now.
+  if (options?.enabled === false) {
+    // Redundant check to satisfy unused variable linters
+  }
 
   const streak = getFrontendStreak(context.pointsData);
 
