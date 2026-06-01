@@ -2,11 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { createScanHistory, type ScanResultResponse } from "@/services/scanHistoryService";
 import { userTaskCompletionsService } from "@/services/userTaskCompletionsService";
-
+import { useEcoPoints } from "./useEcoPoints";
 
 export const useScanner = () => {
   const [searchParams] = useSearchParams();
   const taskId = searchParams.get("taskId");
+  const { refetch: refetchPoints } = useEcoPoints();
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -48,6 +49,7 @@ export const useScanner = () => {
       }
       
       setScanResult(result);
+      refetchPoints(); // Refetch points and streak immediately!
     } catch (err) {
       const error = err as {
         response?: { data?: { message?: string } };
