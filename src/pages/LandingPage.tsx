@@ -2,7 +2,9 @@ import LandingNavbar from "../features/landing/components/LandingNavbar";
 import HeroSection from "../features/landing/components/HeroSection";
 import FeatureHighlights from "../features/landing/components/FeatureHighlights";
 import AboutSection from "../features/landing/components/AboutSection";
+import LeaderboardSection from "../features/landing/components/LeaderboardSection";
 import FAQSection from "../features/landing/components/FAQSection";
+import CTASection from "../features/landing/components/CTASection";
 import LandingFooter from "../features/landing/components/LandingFooter";
 
 export default function LandingPage() {
@@ -17,7 +19,9 @@ export default function LandingPage() {
         <HeroSection />
         <FeatureHighlights />
         <AboutSection />
+        <LeaderboardSection />
         <FAQSection />
+        <CTASection />
       </main>
 
       <LandingFooter />

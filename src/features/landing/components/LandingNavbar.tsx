@@ -1,14 +1,48 @@
-import { buttonVariants } from '@/components/ui/button';
-import { useSession } from '@/features/auth/hooks/useSession';
-import { cn } from '@/lib/utils';
-import { Leaf, Sun, Moon } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { buttonVariants } from "@/components/ui/button";
+import { useSession } from "@/features/auth/hooks/useSession";
+import { cn } from "@/lib/utils";
+import { Leaf, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Link } from "react-router-dom";
 
 export default function LandingNavbar() {
   const { userData } = useSession();
   const { theme, setTheme } = useTheme();
-  const redirectPath = userData?.data?.role === 'admin' ? '/admin' : '/dashboard';
+  const redirectPath =
+    userData?.data?.role === "admin" ? "/admin" : "/dashboard";
+  const [activeSection, setActiveSection] = useState("beranda");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+
+      if (scrollPosition < 50) {
+        setActiveSection("beranda");
+        return;
+      }
+
+      const sections = ["beranda", "fitur", "tentang-kami", "faq"];
+      let currentSection = "beranda";
+
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const top = rect.top + scrollPosition;
+          // Offset 120px from top of section to active it before it hits the navbar
+          if (scrollPosition >= top - 120) {
+            currentSection = section;
+          }
+        }
+      }
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const scrollToSection = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -18,7 +52,8 @@ export default function LandingNavbar() {
     const element = document.getElementById(id);
     if (element) {
       const y = element.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: y, behavior: "smooth" });
+      setActiveSection(id);
     }
   };
 
@@ -35,43 +70,38 @@ export default function LandingNavbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-8">
-          <a
-            href="#beranda"
-            onClick={(e) => scrollToSection(e, 'beranda')}
-            className="text-emerald-500 font-semibold text-sm border-b-2 border-emerald-500 pb-1"
-          >
-            Beranda
-          </a>
-          <a
-            href="#fitur"
-            onClick={(e) => scrollToSection(e, 'fitur')}
-            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
-          >
-            Fitur
-          </a>
-          <a
-            href="#tentang-kami"
-            onClick={(e) => scrollToSection(e, 'tentang-kami')}
-            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
-          >
-            Tentang Kami
-          </a>
-          <a
-            href="#faq"
-            onClick={(e) => scrollToSection(e, 'faq')}
-            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
-          >
-            FAQ
-          </a>
+          {[
+            { id: "beranda", label: "Beranda" },
+            { id: "fitur", label: "Fitur" },
+            { id: "tentang-kami", label: "Tentang Kami" },
+            { id: "faq", label: "FAQ" },
+          ].map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => scrollToSection(e, item.id)}
+                className={cn(
+                  "text-sm transition-colors pb-1 border-b-2",
+                  isActive
+                    ? "text-emerald-500 font-semibold border-emerald-500"
+                    : "text-emerald-400/80 hover:text-emerald-500 font-medium border-transparent",
+                )}
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors focus:outline-none border border-slate-100 dark:border-slate-800 flex items-center justify-center shrink-0 cursor-pointer"
             aria-label="Toggle theme"
           >
-            {theme === 'dark' ? (
+            {theme === "dark" ? (
               <Sun className="size-4 text-amber-500" />
             ) : (
               <Moon className="size-4 text-slate-500" />
@@ -82,8 +112,8 @@ export default function LandingNavbar() {
             <Link
               to={redirectPath}
               className={cn(
-                buttonVariants({ variant: 'default' }),
-                'rounded-full shadow-md bg-slate-900 hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-xs sm:text-sm px-3.5 sm:px-6 py-1.5 sm:py-2',
+                buttonVariants({ variant: "default" }),
+                "rounded-full shadow-md bg-slate-900 hover:bg-slate-800 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-xs sm:text-sm px-3.5 sm:px-6 py-1.5 sm:py-2",
               )}
             >
               Go to Dashboard
@@ -93,8 +123,8 @@ export default function LandingNavbar() {
               <Link
                 to="/login"
                 className={cn(
-                  buttonVariants({ variant: 'outline' }),
-                  'rounded-full border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 px-3.5 sm:px-6 text-xs sm:text-sm font-medium',
+                  buttonVariants({ variant: "outline" }),
+                  "rounded-full border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 px-3.5 sm:px-6 text-xs sm:text-sm font-medium",
                 )}
               >
                 Masuk
@@ -102,8 +132,8 @@ export default function LandingNavbar() {
               <Link
                 to="/register"
                 className={cn(
-                  buttonVariants({ variant: 'default' }),
-                  'rounded-full bg-[#20c997] hover:bg-[#1ba87e] text-white px-3.5 sm:px-6 text-xs sm:text-sm font-medium shadow-none border-none',
+                  buttonVariants({ variant: "default" }),
+                  "rounded-full bg-[#20c997] hover:bg-[#1ba87e] text-white px-3.5 sm:px-6 text-xs sm:text-sm font-medium shadow-none border-none",
                 )}
               >
                 Daftar

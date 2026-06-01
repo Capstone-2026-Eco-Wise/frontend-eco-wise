@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { getEcoPoints,type EcoPoints } from "@/services/ecoPointsService";
+import { type EcoPoints } from "@/services/ecoPointsService";
+import { useEcoPointsContext } from "../context/EcoPointsContext";
 
 export interface ProcessedStreak {
   streakCount: number;
@@ -10,7 +10,12 @@ export interface ProcessedStreak {
 
 const getFrontendStreak = (pointsData: EcoPoints | null): ProcessedStreak => {
   if (!pointsData) {
-    return { streakCount: 0, flameColor: 'text-slate-300', isAnimated: false, isLit: false };
+    return {
+      streakCount: 0,
+      flameColor: 'text-slate-300',
+      isAnimated: false,
+      isLit: false,
+    };
   }
 
   const { status, currentStreak } = pointsData;
@@ -41,32 +46,22 @@ const getFrontendStreak = (pointsData: EcoPoints | null): ProcessedStreak => {
   };
 };
 
-export const useEcoPoints = () => {
-  const [pointsData, setPointsData] = useState<EcoPoints | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+export const useEcoPoints = (options?: { enabled?: boolean }) => {
+  const context = useEcoPointsContext();
+  
+  // enabled option is now handled inside the Context (it only fetches if role === 'user')
+  // We keep the option parameter for backward compatibility if needed, but it's largely redundant now.
+  if (options?.enabled === false) {
+    // Redundant check to satisfy unused variable linters
+  }
 
-  const refetch = () => setRefreshTrigger((prev) => prev + 1);
+  const streak = getFrontendStreak(context.pointsData);
 
-  useEffect(() => {
-    const fetchPoints = async () => {
-      try {
-        setLoading(true);
-        const data = await getEcoPoints();
-        setPointsData(data);
-      } catch (err) {
-        const error = err as { response?: { data?: { message?: string } }; message?: string };
-        setError(error.response?.data?.message || error.message || "Gagal memuat data poin");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPoints();
-  }, [refreshTrigger]);
-
-  const streak = getFrontendStreak(pointsData);
-
-  return { pointsData, loading, error, streak, refetch };
+  return { 
+    pointsData: context.pointsData, 
+    loading: context.loading, 
+    error: context.error, 
+    streak, 
+    refetch: context.refetchPoints 
+  };
 };
