@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { useSession } from '@/features/auth/hooks/useSession';
 import { cn } from '@/lib/utils';
@@ -9,6 +10,38 @@ export default function LandingNavbar() {
   const { userData } = useSession();
   const { theme, setTheme } = useTheme();
   const redirectPath = userData?.data?.role === 'admin' ? '/admin' : '/dashboard';
+  const [activeSection, setActiveSection] = useState('beranda');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+
+      if (scrollPosition < 50) {
+        setActiveSection('beranda');
+        return;
+      }
+
+      const sections = ['beranda', 'fitur', 'tentang-kami', 'faq'];
+      let currentSection = 'beranda';
+
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const top = rect.top + scrollPosition;
+          // Offset 120px from top of section to active it before it hits the navbar
+          if (scrollPosition >= top - 120) {
+            currentSection = section;
+          }
+        }
+      }
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scrollToSection = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -19,6 +52,7 @@ export default function LandingNavbar() {
     if (element) {
       const y = element.getBoundingClientRect().top + window.scrollY - 80;
       window.scrollTo({ top: y, behavior: 'smooth' });
+      setActiveSection(id);
     }
   };
 
@@ -35,34 +69,29 @@ export default function LandingNavbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-8">
-          <a
-            href="#beranda"
-            onClick={(e) => scrollToSection(e, 'beranda')}
-            className="text-emerald-500 font-semibold text-sm border-b-2 border-emerald-500 pb-1"
-          >
-            Beranda
-          </a>
-          <a
-            href="#fitur"
-            onClick={(e) => scrollToSection(e, 'fitur')}
-            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
-          >
-            Fitur
-          </a>
-          <a
-            href="#tentang-kami"
-            onClick={(e) => scrollToSection(e, 'tentang-kami')}
-            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
-          >
-            Tentang Kami
-          </a>
-          <a
-            href="#faq"
-            onClick={(e) => scrollToSection(e, 'faq')}
-            className="text-emerald-400/80 hover:text-emerald-500 font-medium text-sm transition-colors pb-1 border-b-2 border-transparent"
-          >
-            FAQ
-          </a>
+          {[
+            { id: 'beranda', label: 'Beranda' },
+            { id: 'fitur', label: 'Fitur' },
+            { id: 'tentang-kami', label: 'Tentang Kami' },
+            { id: 'faq', label: 'FAQ' },
+          ].map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => scrollToSection(e, item.id)}
+                className={cn(
+                  'text-sm transition-colors pb-1 border-b-2',
+                  isActive
+                    ? 'text-emerald-500 font-semibold border-emerald-500'
+                    : 'text-emerald-400/80 hover:text-emerald-500 font-medium border-transparent',
+                )}
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
